@@ -1,0 +1,9 @@
+SUMMARY = "User Data Image for CML."
+IMAGE_INSTALL = ""
+IMAGE_LINGUAS = ""
+PACKAGE_INSTALL = "userdata"
+
+IMAGE_FSTYPES = "ext4"
+IMAGE_ROOTFS_EXTRA_SPACE = "3000000"
+
+inherit image
