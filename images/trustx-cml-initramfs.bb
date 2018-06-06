@@ -13,6 +13,8 @@ PACKAGE_INSTALL = "\
 	run \
 	strace \
 	iptables \
+	ibmtss2 \
+	tpm2d \
 	${ROOTFS_BOOTSTRAP_INSTALL} \
 "
 
