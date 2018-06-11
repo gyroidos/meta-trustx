@@ -18,6 +18,19 @@ DEPENDS = "gnu-efi-native help2man-native sbsigntool-native"
 S = "${WORKDIR}/efitools_${PV}"
 
 
+EFIFILES = "\
+	LockDown.efi \
+	KeyTool.efi \
+"
+
+BINARIES = "\
+	cert-to-efi-sig-list \
+	sig-list-to-certs \
+	sign-efi-sig-list \
+	hash-to-efi-sig-list \
+	cert-to-efi-hash-list \
+"
+
 LIBRARY_FLAGS = "\
 	-nostdlib -shared -Bsymbolic \
 	${STAGING_LIBDIR}/crt0-efi-${HOST_ARCH}.o \
@@ -44,16 +57,13 @@ EXTRA_OEMAKE = "\
 "
 
 do_compile() {
-	oe_runmake all
+	oe_runmake ${BINARIES}
+	oe_runmake ${EFIFILES}
 }
 
 do_install () {
 	install -d ${D}${bindir}
-	install ${S}/cert-to-efi-sig-list ${D}${bindir}
-	install ${S}/sig-list-to-certs ${D}${bindir}
-	install ${S}/sign-efi-sig-list ${D}${bindir}
-	install ${S}/hash-to-efi-sig-list ${D}${bindir}
-	install ${S}/cert-to-efi-hash-list ${D}${bindir}
-	install ${S}/KeyTool.efi ${D}${bindir}
-	install ${S}/LockDown.efi ${D}${bindir}
+	for bin in ${BINARIES} ${EFIFILES}; do
+		install ${S}/${bin} ${D}${bindir}
+	done
 }
