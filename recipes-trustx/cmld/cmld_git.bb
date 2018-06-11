@@ -10,6 +10,8 @@ INSANE_SKIP_${PN} = "ldflags"
 
 DEPENDS = "protobuf-c-native protobuf-c libselinux protobuf-c-text libcap"
 
+EXTRA_OEMAKE = "TRUSTME_HARDWARE=${TRUSTME_HARDWARE}"
+
 do_configure () {
         :
 }
