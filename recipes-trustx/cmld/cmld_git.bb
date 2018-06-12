@@ -13,16 +13,19 @@ DEPENDS = "protobuf-c-native protobuf-c libselinux protobuf-c-text libcap"
 EXTRA_OEMAKE = "TRUSTME_HARDWARE=${TRUSTME_HARDWARE}"
 
 do_configure () {
-        :
+    :
 }
 
 
 do_compile () {
-        oe_runmake all 
+    oe_runmake all 
 }
 
 do_install () {
-	install -d ${D}${sbindir}/
-	install -d ${D}${sysconfdir}/init.d
-    	install -m 0755 ${S}/cmld ${D}${sbindir}/
+    install -d ${D}${sbindir}/
+    install -d ${D}${sysconfdir}/init.d
+    install -m 0755 ${S}/cmld ${D}${sbindir}/
+    mkdir -p ${DEPLOY_DIR_IMAGE}/proto
+    cp ${S}/*.proto ${DEPLOY_DIR_IMAGE}/proto
 }
+
