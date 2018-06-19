@@ -1,7 +1,7 @@
 LICENSE = "GPLv2"
 LIC_FILES_CHKSUM = "file://${WORKDIR}/git/COPYING;md5=b234ee4d69f5fce4486a80fdaf4a4263"
 
-BRANCH = "master"
+BRANCH = "trustx-master"
 SRCREV = "${AUTOREV}"
 SRC_URI = "git://github.com/trustm3/device_fraunhofer_common_cml.git;protocol=http;branch=${BRANCH}"
 
