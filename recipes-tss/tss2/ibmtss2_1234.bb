@@ -50,30 +50,33 @@ do_install() {
 	:
 	install -d ${D}${libdir}/
 	install -m 0755 ${S}/libibmtss.so ${D}${libdir}/
-	install -m 0755 ${S}/libibmtss.so.0 ${D}${libdir}/
-	install -m 0755 ${S}/libibmtss.so.0.1 ${D}${libdir}/
 	install -m 0755 ${S}/libibmtssutils.so ${D}${libdir}/
-	install -m 0755 ${S}/libibmtssutils.so.0 ${D}${libdir}/
-	install -m 0755 ${S}/libibmtssutils.so.0.1 ${D}${libdir}/
 
 	install -d ${D}${bindir}/
 	install -m 0755 ${S}/getrandom ${D}${bindir}/${PREFIX}_getrandom
-	install -m 0755 ${S}/powerup ${D}${bindir}/${PREFIX}_powerup
-	install -m 0755 ${S}/startup ${D}${bindir}/${PREFIX}_startup
-	install -m 0755 ${S}/quote ${D}${bindir}/${PREFIX}_quote
-	install -m 0755 ${S}/unseal ${D}${bindir}/${PREFIX}_unseal
-	install -m 0755 ${S}/load ${D}${bindir}/${PREFIX}_seal
+	#install -m 0755 ${S}/powerup ${D}${bindir}/${PREFIX}_powerup
+	#install -m 0755 ${S}/startup ${D}${bindir}/${PREFIX}_startup
+	#install -m 0755 ${S}/quote ${D}${bindir}/${PREFIX}_quote
+	#install -m 0755 ${S}/unseal ${D}${bindir}/${PREFIX}_unseal
+	#install -m 0755 ${S}/load ${D}${bindir}/${PREFIX}_seal
 	install -m 0755 ${S}/clear ${D}${bindir}/${PREFIX}_clear
-	install -m 0755 ${S}/create ${D}${bindir}/${PREFIX}_create
-	install -m 0755 ${S}/createprimary ${D}${bindir}/${PREFIX}_createprimary
-	install -m 0755 ${S}/pcrextend ${D}${bindir}/${PREFIX}_pcrextend
+	#install -m 0755 ${S}/create ${D}${bindir}/${PREFIX}_create
+	#install -m 0755 ${S}/createprimary ${D}${bindir}/${PREFIX}_createprimary
+	#install -m 0755 ${S}/pcrextend ${D}${bindir}/${PREFIX}_pcrextend
 	install -m 0755 ${S}/pcrread ${D}${bindir}/${PREFIX}_pcrread
-	install -m 0755 ${S}/sign ${D}${bindir}/${PREFIX}_sign
-	install -m 0755 ${S}/verifysignature ${D}${bindir}/${PREFIX}_verifiysignature
+	#install -m 0755 ${S}/sign ${D}${bindir}/${PREFIX}_sign
+	#install -m 0755 ${S}/verifysignature ${D}${bindir}/${PREFIX}_verifiysignature
 
 	install -d ${D}${includedir}/
 	install -d ${D}${includedir}/tss2/
 	install -m 0644 ${S}/tss2/*.h ${D}${includedir}/tss2/
+
+	# create symlinks for tss library
+	cd ${D}${libdir}
+	ln -s libibmtssutils.so libibmtssutils.so.0
+	ln -s libibmtssutils.so libibmtssutils.so.0.1
+	ln -s libibmtss.so libibmtss.so.0
+	ln -s libibmtss.so libibmtss.so.0.1
 }
 
 FILES_${PN} += "${libdir}/*.so"
