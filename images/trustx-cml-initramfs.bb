@@ -9,12 +9,14 @@ PACKAGE_INSTALL = "\
 	libselinux \
 	cmld \
 	scd \
-	control \
-	run \
 	strace \
 	iptables \
 	ibmtss2 \
+	lvm2 \
+	kpartx \
 	tpm2d \
+	e2fsprogs-mke2fs \
+	kvmtool \
 	${ROOTFS_BOOTSTRAP_INSTALL} \
 "
 
@@ -23,8 +25,6 @@ IMAGE_LINUGUAS = " "
 LICENSE = "GPLv2"
 
 IMAGE_FEATURES = ""
-
-EXTRA_IMAGE_FEATURES = "debug-tweaks "
 
 export IMAGE_BASENAME = "trustx-cml-initramfs"
 IMAGE_FSTYPES = "${INITRAMFS_FSTYPES}"
@@ -42,10 +42,17 @@ update_fstab () {
 /dev/disk/by-partlabel/data /data ext4 defaults   0 0 
 
 EOF
-} 
+}
 
 update_inittab () {
-    echo "1:2345:respawn:${base_sbindir}/mingetty --autologin root tty1" >> ${IMAGE_ROOTFS}/etc/inittab
+    echo "12:2345:respawn:${base_sbindir}/mingetty --autologin root tty12" >> ${IMAGE_ROOTFS}/etc/inittab
+    mkdir -p ${IMAGE_ROOTFS}/dev
+    mknod -m 622 ${IMAGE_ROOTFS}/dev/console c 5 1
+    mknod -m 622 ${IMAGE_ROOTFS}/dev/tty12 c 4 1
 }
 
 ROOTFS_POSTPROCESS_COMMAND += "update_fstab; update_inittab;"
+
+## uncomment for debug purpose to allow login
+#inherit extrausers
+#EXTRA_USERS_PARAMS = "usermod -P root root;"
