@@ -21,6 +21,10 @@ do_install() {
   cp ${CFG_OVERLAY_DIR}/${TRUSTME_HARDWARE}/device.conf ${D}/cml/
   cp ${TEST_CERT_DIR}/ssig_rootca.cert ${D}/cml/tokens/
   cp ${TEST_CERT_DIR}/gen_rootca.cert ${D}/cml/tokens/
+
+  mkdir -p ${DEPLOY_DIR_IMAGE}
+  mkdir -p ${D}/cml/operatingsystems/
+  cp -r ${DEPLOY_DIR_IMAGE}/trustx-guests/* ${D}/cml/operatingsystems/
 }
 
 FILES_${PN} += "/cml/* "
