@@ -1,5 +1,6 @@
 FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
 SRC_URI += "file://trustx.cfg" 
+SRC_URI += "file://netfilter.cfg" 
 SRC_URI += "file://trustx-intel.cfg" 
 
 DEPENDS += " sbsigntool-native efitools-native pki-native"
