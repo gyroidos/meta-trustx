@@ -15,11 +15,12 @@ SRC_URI = "git://github.com/trustm3/device_fraunhofer_common_cml.git;branch=${BR
 
 S = "${WORKDIR}/git/"
 
-PACKAGES =+ "scd tpm2d"
+PACKAGES =+ "control scd tpm2d"
 
 INSANE_SKIP_${PN} = "ldflags"
 INSANE_SKIP_scd = "ldflags"
 INSANE_SKIP_tpm2d = "ldflags"
+INSANE_SKIP_control = "ldflags"
 
 DEPENDS = "protobuf-c-native protobuf-c libselinux protobuf-c-text libcap e2fsprogs openssl ibmtss2"
 
@@ -54,7 +55,9 @@ do_install () {
 
 RDEPENDS_scd += "cmld openssl"
 RDEPENDS_tpm2d += "cmld ibmtss2"
+RDEPENDS_control += "protobuf-c protobuf-c-text"
 
 FILES_scd = "${sbindir}/scd"
+FILES_control = "${sbindir}/control"
 FILES_tpm2d = "${sbindir}/tpm2*"
 

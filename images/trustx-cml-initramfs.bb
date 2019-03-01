@@ -10,6 +10,7 @@ PACKAGE_INSTALL = "\
 	libselinux \
 	cmld \
 	service-static \
+	control \
 	scd \
 	strace \
 	iptables \
