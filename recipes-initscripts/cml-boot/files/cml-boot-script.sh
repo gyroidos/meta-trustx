@@ -39,15 +39,18 @@ if [ ! -f "/data/cml/containers/00000000-0000-0000-0000-000000000000.conf" ]; th
 	cp /data/cml/containers_templates/00000000-0000-0000-0000-000000000000.conf /data/cml/containers/00000000-0000-0000-0000-000000000000.conf
 fi
 
-if [ ! -f "/dev/tpm0" ]; then
+if [ -f "/dev/tpm0" ]; then
 	echo "Starting TPM/TSS 2.0 Helper Daemon (tpm2d)"
 	tpm2d &
-fi
 
-while [ ! -S /run/socket/cml-tpm2d-control ]; do
-	echo "Waiting for tpm2d's control interface"
-	sleep 1
-done
+	if [ ! -S /run/socket/cml-tpm2d-control ]; then
+		echo "Waiting for tpm2d's control interface"
+	fi
+	while [ ! -S /run/socket/cml-tpm2d-control ]; do
+		echo -n "."
+		sleep 2
+	done
+fi
 
 # if device.cert is not present, start scd to initialize device
 export PATH="/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin"
@@ -58,8 +61,11 @@ if [ ! -f /data/cml/tokens/device.cert ]; then
 else
 	echo "Starting Security Helpder Daemon (scd)"
 	scd &
-	while [ ! -S /run/socket/cml-scd-control ]; do
+	if [ ! -S /run/socket/cml-scd-control ]; then
 		echo "Waiting for scd's control interface"
+	fi
+	while [ ! -S /run/socket/cml-scd-control ]; do
+		echo -n "."
 		sleep 1
 	done
 
