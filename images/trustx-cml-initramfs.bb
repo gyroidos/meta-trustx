@@ -27,6 +27,12 @@ PACKAGE_INSTALL = "\
 	cml-boot \
 "
 
+PACKAGE_INSTALL += "\
+	gptfdisk \
+	parted \
+	util-linux-sfdisk \
+"
+
 IMAGE_LINUGUAS = " "
 
 LICENSE = "GPLv2"
