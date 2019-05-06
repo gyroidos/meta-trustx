@@ -12,7 +12,8 @@ BRANCH = "trustme-7.1.2_r33-github"
 
 SRCREV = "${AUTOREV}"
 #SRC_URI = "git://github.com/protobuf-c/protobuf-c-text.git;protocol=http"
-SRC_URI = "git://github.com/trustm3/external_protobuf-c-text.git;protocol=http;branch=${BRANCH}"
+SRC_URI = "git://github.com/trustm3/external_protobuf-c-text.git;protocol=http;branch=${BRANCH} \
+file://escape-with-octal-as-unsigned.patch"
 
 inherit pkgconfig autotools-brokensep
 
