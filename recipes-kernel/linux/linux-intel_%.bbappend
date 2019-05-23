@@ -1,14 +1,7 @@
 FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
-SRC_URI += "file://trustx.cfg"
-SRC_URI += "file://trustx-intel.cfg"
-
-if [ "${TRUSTME_MODSIGNING}"="1" ]; then
-	SRC_URI += "file://module_signing.cfg"
-fi
-
-if [ "$TRUSTME_KERNDBG"="1" ];then
-	SRC_URI += "file://debugging.cfg"
-fi
+SRC_URI += "file://trustx.cfg" 
+SRC_URI += "file://module_signing.cfg" 
+SRC_URI += "file://trustx-intel.cfg" 
 
 DEPENDS += " sbsigntool-native efitools-native pki-native"
 
