@@ -82,18 +82,19 @@ class TrustmeBootPlugin(SourcePlugin):
         deploy_dir_image = get_bitbake_var("DEPLOY_DIR_IMAGE")
 
         sbsign_sysroot = get_bitbake_var("RECIPE_SYSROOT_NATIVE")
-        sbsign_sysroot = "{0}/usr/bin".format(sbsign_sysroot)
+        sbsign_cmd = "{0}/usr/bin/sbsign".format(sbsign_sysroot)
 
         test_cert_dir = "{0}/test_certificates".format(topdir)
         secure_boot_signing_key = "{0}/ssig_subca.key".format(test_cert_dir)
         secure_boot_signing_cert = "{0}/ssig_subca.cert".format(test_cert_dir)
-        kernelbin="{0}/bzImage-initramfs-{1}.bin".format(deploy_dir_image, machine)
-        link=os.readlink(kernelbin)
-        try:
-            os.symlink("{0}.signed".format(kernelbin), "{0}.signed".format(link))
+        kernelbin_link="{0}/bzImage-initramfs-{1}.bin".format(deploy_dir_image, machine)
+        kernelbin_path=os.readlink(kernelbin_link)
 
-            sign_cmd='sbsign --key "${SECURE_BOOT_SIGNING_KEY}" --cert "${SECURE_BOOT_SIGNING_CERT}" --output "${kernelbin}.signed" "${kernelbin}"'
-            exec_native_cmd(sign_cmd, sbsign_sysroot)
+        try:
+            os.symlink("{0}.signed".format(kernelbin_path), "{0}.signed".format(kernelbin_link))
+
+            sign_cmd='{0} --key "${secure_boot_signing_key}" --cert "${secure_boot_signing_key}" --output "${kernelbin}.signed" "${kernelbin}"'.format(sbsign_cmd)
+            exec_cmd(sign_cmd)
 
             try:
                 cp_cmd = "cp -L {0}/bzImage-initramfs-{1}.bin.signed {2}/EFI/BOOT/BOOTX64.EFI".format(kernel_dir, machine, hdddir)
@@ -103,7 +104,7 @@ class TrustmeBootPlugin(SourcePlugin):
 
 
         except FileExistsError as e:
-            print("Signed binary symlink already existing, skipping signing")
+            bb.warn("Signed binary symlink already existing, skipping signing")
 
 
         
