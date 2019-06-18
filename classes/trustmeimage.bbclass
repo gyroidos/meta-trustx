@@ -67,8 +67,8 @@ TRUSTME_IMAGE_OUT="${DEPLOY_DIR_IMAGE}/trustme_image"
 TRUSTME_CONTAINER_ARCH="qemux86-64"
 
 TRUSTME_IMAGE="${TRUSTME_IMAGE_OUT}/trustmeimage.img"
-TRUSTME_DATAPART_EXTRA_SPACE="100000000"
-TRUSTME_BOOT_EXTRA_SPACE="10000000"
+TRUSTME_DATAPART_EXTRA_FACTOR="1.2"
+TRUSTME_BOOTPART_EXTRA_FACTOR="1.2"
 TRUSTME_BOOTPART_FS="fat16"
 TRUSTME_BOOTPART_ALIGN="4096"
 TRUSTME_BOOTPART_PADDING="100000000"
@@ -230,9 +230,8 @@ IMAGE_CMD_trustmeimage () {
 	cp -fr "${tmp_modules}/lib/modules" "${tmp_datapart}"
 
 	# Create boot partition and mark it as bootable
-	extrascpace_targetblocks="$(expr ${TRUSTME_BOOT_EXTRA_SPACE} '/' ${TRUSTME_TARGET_ALIGN} + ${TRUSTME_TARGET_ALIGN})"
 	bootpart_size_targetblocks="$(du --block-size=${TRUSTME_TARGET_ALIGN} -s ${TRUSTME_BOOTPART_DIR} | awk '{print $1}')"
-	bootpart_size_targetblocks="$(expr $bootpart_size_targetblocks + $extrascpace_targetblocks)"
+	bootpart_size_targetblocks="$(python -c "print(str($bootpart_size_targetblocks + ($bootpart_size_targetblocks * ${TRUSTME_BOOTPART_EXTRA_FACTOR}))[:-2])")"
 	bootpart_size_bytes="$(expr $bootpart_size_targetblocks '*' ${TRUSTME_TARGET_ALIGN})"
 	# append space to bootpart if TRUSTME_TARGET_ALIGN < 1024 (mkdisfs block size)
 	if ! [ "$(expr $bootpart_size_bytes '%' 1024)"="0" ]; then
@@ -245,9 +244,8 @@ IMAGE_CMD_trustmeimage () {
 
 	bootpart_size_1k="$(expr $bootpart_size_bytes '/' 1024)"
 
-	datapart_extrasize="$(expr ${TRUSTME_DATAPART_EXTRA_SPACE} '/' ${TRUSTME_TARGET_ALIGN} + ${TRUSTME_TARGET_ALIGN})"
 	datapart_size_targetblocks="$(du --block-size=${TRUSTME_TARGET_ALIGN} -s ${tmp_datapart} | awk '{print $1}')"
-	datapart_size_targetblocks="$(expr $datapart_size_targetblocks + $datapart_extrasize)"
+	datapart_size_targetblocks="$(python -c "print(str($datapart_size_targetblocks + ($datapart_size_targetblocks * ${TRUSTME_BOOTPART_EXTRA_FACTOR}))[:-2])")"
 	datapart_size_bytes="$(expr $datapart_size_targetblocks '*' ${TRUSTME_TARGET_ALIGN})"
 	datafolder_size="$(expr $datapart_size_targetblocks '*' ${TRUSTME_TARGET_ALIGN})"
 	bbnote "Data files size: $datafolder_size bytes"
