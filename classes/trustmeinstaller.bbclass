@@ -15,6 +15,7 @@ do_trustme_bootpart[nostamp] = "1"
 
 do_trustme_bootpart[depends] += " \
     virtual/kernel:do_deploy \
+    trustx-cml:do_image_complete \
     sbsigntool-native:do_populate_sysroot \
 "
 
@@ -199,26 +200,8 @@ IMAGE_CMD_trustmeimage () {
 	# copy files to temp data directory
 	bbnote "Preparing files for data partition"
 
-	if ! [ -f "${deploy_dir_container}/trustx-configs/device.conf" ];then
-		# TODO create image for manual setup
-		bbfatal_log "It seems that no containers were built. At least one container is needed. Exiting..."
-	fi
-
-	cp -f "${deploy_dir_container}/trustx-configs/device.conf" "${rootfs_datadir}/cml/"
-
-	cp -far "${deploy_dir_container}/trustx-configs/container/." "${rootfs_datadir}/cml/containers_templates/"
-
-	cp -f "${test_cert_dir}/ssig_rootca.cert" "${rootfs_datadir}/cml/tokens/"
-
-	cp -f "${test_cert_dir}/gen_rootca.cert" "${rootfs_datadir}/cml/tokens/"
-
-	mkdir -p "${deploy_dir_container}"
-
-	mkdir -p "${rootfs_datadir}/cml/operatingsystems/"
-
-	mkdir -p "${rootfs_datadir}/cml/containers/"
-
-	cp -afr "${deploy_dir_container}/trustx-guests/." "${rootfs_datadir}/cml/operatingsystems"
+	cp -afr "${DEPLOY_DIR_IMAGE}/trustme_image/trustmeimage.img" "${rootfs_datadir}/"
+	cp -afr "${TOPDIR}/../trustme/build/yocto/copy_image_to_disk.sh" "${rootfs_datadir}/"
 
 	# copy modules to data partition directory
 	cp -fL "${DEPLOY_DIR_IMAGE}/modules-${MODULE_TARBALL_LINK_NAME}.tgz" "${tmp_modules}/modules.tgz"
