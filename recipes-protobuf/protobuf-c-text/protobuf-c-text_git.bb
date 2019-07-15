@@ -16,7 +16,7 @@ SRC_URI = "git://github.com/trustm3/external_protobuf-c-text.git;protocol=http;b
 
 inherit pkgconfig autotools-brokensep
 
-DEPENDS += "re2c-native"
+DEPENDS += "re2c-native libcheck protobuf-c"
 REPENDS += "protobuf-c"
 
 S = "${WORKDIR}/git"
