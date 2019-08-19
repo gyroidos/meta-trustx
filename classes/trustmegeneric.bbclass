@@ -25,7 +25,6 @@ TRUSTME_DATAPART_EXTRA_FACTOR="1.2"
 TRUSTME_BOOTPART_EXTRA_FACTOR="1.2"
 TRUSTME_BOOTPART_FS="fat16"
 TRUSTME_BOOTPART_ALIGN="4096"
-TRUSTME_BOOTPART_PADDING="100000000"
 TRUSTME_DATAPART_FS="ext4"
 TRUSTME_ROOTFS_ALIGN="4096"
 
@@ -177,8 +176,6 @@ if [ -z "${TRUSTME_CONTAINER_ARCH_${MACHINE}}" ];then
 	cp -far "${deploy_dir_container}/trustx-configs/container/." "${rootfs_datadir}/cml/containers_templates/"
 
 	cp -f "${test_cert_dir}/ssig_rootca.cert" "${rootfs_datadir}/cml/tokens/"
-
-	cp -f "${test_cert_dir}/gen_rootca.cert" "${rootfs_datadir}/cml/tokens/"
 
 	mkdir -p "${deploy_dir_container}"
 
