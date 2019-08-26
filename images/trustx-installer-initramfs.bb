@@ -57,8 +57,7 @@ update_fstab () {
 
 tmpfs /tmp tmpfs defaults 0 0
 
-/dev/disk/by-partlabel/boot /boot vfat umask=0077 0 1
-/dev/disk/by-partlabel/trustmeinstaller /mnt ext4 defaults 0 0
+/dev/disk/by-label/trustmeinstaller /mnt ext4 defaults 0 0
 EOF
 }
 
