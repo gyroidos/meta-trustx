@@ -1,7 +1,4 @@
 inherit image
-inherit trustmezynq
-inherit trustmex86
-inherit trustmerpi
 
 LICENSE = "GPLv2"
 
