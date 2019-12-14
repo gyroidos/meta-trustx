@@ -14,20 +14,20 @@ PATH=/sbin:/bin:/usr/sbin:/usr/bin
 
 mkdir -p /proc
 mkdir -p /sys
+mkdir -p /run
 
-mount -t proc proc /proc
-mount -t sysfs sysfs /sys
-mount -t devtmpfs none /dev
+mount /proc
+mount /sys
+mount /dev
+mount /run
 
 mkdir -p /dev/pts
-mount -t devpts devpts /dev/pts
+mount /dev/pts
 
 # do not log kernel messages to console
 echo 1 > /proc/sys/kernel/printk
 
 mkdir -p /dev/shm
-mkdir -p /run
-mkdir -p /var/run
 mkdir -p /data
 
 udevd --daemon
@@ -46,6 +46,8 @@ udevadm settle
 modprobe loop
 modprobe btrfs
 modprobe vport-gre
+
+mount -a
 
 if [ ! -f "/data/cml/containers/00000000-0000-0000-0000-000000000000.conf" ]; then
 	cp /data/cml/containers_templates/00000000-0000-0000-0000-000000000000.conf /data/cml/containers/00000000-0000-0000-0000-000000000000.conf
@@ -87,9 +89,4 @@ echo "Starting Compartment Manger Daemon (cmld)"
 cmld &
 echo "-- cml debug console on tty12 [ready]" > /dev/console
 
-
-udevadm control --exit
-
-
-rm -f /usr/share/X11/xorg.conf.d/90-evdev.conf
 exec /sbin/init > /dev/$LOGTTY 2>&1
