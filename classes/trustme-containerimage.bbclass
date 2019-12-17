@@ -5,13 +5,24 @@ include images/trustx-signing.inc
 IMAGE_FSTYPES_append = " squashfs"
 PACKAGE_INSTALL_append = " service-static"
 
-### if os config file does not exist yet, create it from the default template
-GUESTOS_CONF_TEMPLATE = "guestos-template.conf"
+### NOTE: for this container image, you can provide an operating system config template
+### as well as a container template, for this purpose use the variables
+### GUESTOS_CONF_TEMPLATE
+### and
+### CONTAINER_CONF_TEMPLATE
+### respectively. If you do not redefine these variable, a default guestos config
+### and no container config will be created
+
+GUESTOS_CONF_TEMPLATE ??= "${CFG_OVERLAY_DIR}/guestos-template.conf"
+CONTAINER_CONF_TEMPLATE ??= ""
+CONFIGS_OUT = "${DEPLOY_DIR_IMAGE}/trustx-configs"
 
 do_sign_guestos_prepend () {
     if [ ! -f ${CFG_OVERLAY_DIR}/${TRUSTME_HARDWARE}/${PN}os.conf ]; then
-	cp ${CFG_OVERLAY_DIR}/${GUESTOS_CONF_TEMPLATE}  ${CFG_OVERLAY_DIR}/${TRUSTME_HARDWARE}/${PN}os.conf
+	cp ${GUESTOS_CONF_TEMPLATE}  ${CFG_OVERLAY_DIR}/${TRUSTME_HARDWARE}/${PN}os.conf
 	sed -i '/name:*/c\name: \"${PN}\"' ${CFG_OVERLAY_DIR}/${TRUSTME_HARDWARE}/${PN}os.conf
     fi
+    if [ ! -z ${CONTAINER_CONF_TEMPLATE} ]; then
+	cp ${CONTAINER_CONF_TEMPLATE} ${CONFIGS_OUT}/container
+    fi
 }
-###
