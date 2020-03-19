@@ -21,3 +21,14 @@ IMAGE_LINGUAS = ""
 IMAGE_FSTYPES = "squashfs"
 
 inherit image
+
+MKNOD_BIN = "${IMAGE_ROOTFS}${base_bindir}/mknod"
+
+replace_mknod() {
+    rm ${MKNOD_BIN}
+    echo "#!/bin/sh" > ${MKNOD_BIN}
+    echo "exit 0" >> ${MKNOD_BIN}
+    chmod 755 ${MKNOD_BIN}
+}
+
+ROOTFS_POSTPROCESS_COMMAND_append = " replace_mknod; "
