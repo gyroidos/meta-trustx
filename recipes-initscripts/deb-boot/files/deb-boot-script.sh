@@ -2,14 +2,14 @@
 
 PATH=/sbin:/bin:/usr/sbin:/usr/bin
 
-# setup hostname and nameserver and wait forever
+# setup hostname and nameserver
 if [ -x /sbin/cservice ]
 then
-	/sbin/cservice /bin/sh -c "while true; do sleep 86400; done"
+	/sbin/cservice
 elif [ -x /sbin/cml-service-container ]
 then
-	/sbin/cml-service-container /bin/sh -c "while true; do sleep 86400; done"
+	/sbin/cml-service-container
 fi
 
-# fallthrough setup and just sleep forever
+# sleep forever to keep container alive
 while true; do sleep 86400; done
