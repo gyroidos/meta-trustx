@@ -20,6 +20,7 @@ PACKAGE_INSTALL = "\
 	openssl-tpm2-engine \
 	e2fsprogs-mke2fs \
 	e2fsprogs-e2fsck \
+	btrfs-tools \
 	${ROOTFS_BOOTSTRAP_INSTALL} \
 	cml-boot \
 "
