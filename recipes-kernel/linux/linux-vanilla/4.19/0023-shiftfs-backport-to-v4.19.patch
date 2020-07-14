@@ -1,7 +1,7 @@
-From 311eee7f16d4a614bcc310438982540ab152ae9b Mon Sep 17 00:00:00 2001
+From 5d25e4b16009fd1a7a1d416fb6b0bfb4fb95e7fb Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Michael=20Wei=C3=9F?= <michael.weiss@aisec.fraunhofer.de>
 Date: Thu, 9 Jan 2020 11:06:43 +0100
-Subject: [PATCH] shiftfs: backport to v4.19
+Subject: [PATCH 23/23] shiftfs: backport to v4.19
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -14,7 +14,7 @@ Signed-off-by: Michael Weiß <michael.weiss@aisec.fraunhofer.de>
  1 file changed, 3 insertions(+), 22 deletions(-)
 
 diff --git a/fs/shiftfs.c b/fs/shiftfs.c
-index 98c9f34ba548..d0f29b4b7aee 100644
+index c46e6003e73b..cb3c7520f353 100644
 --- a/fs/shiftfs.c
 +++ b/fs/shiftfs.c
 @@ -20,6 +20,7 @@
@@ -25,7 +25,7 @@ index 98c9f34ba548..d0f29b4b7aee 100644
  
  struct shiftfs_super_info {
  	struct vfsmount *mnt;
-@@ -1585,13 +1586,12 @@ static ssize_t shiftfs_copyfile(struct file *file_in, loff_t pos_in,
+@@ -1645,13 +1646,12 @@ static ssize_t shiftfs_copyfile(struct file *file_in, loff_t pos_in,
  
  	case SHIFTFS_CLONE:
  		ret = vfs_clone_file_range(real_in.file, pos_in, real_out.file,
@@ -41,7 +41,7 @@ index 98c9f34ba548..d0f29b4b7aee 100644
  		break;
  	}
  	revert_creds(oldcred);
-@@ -1613,24 +1613,6 @@ static ssize_t shiftfs_copy_file_range(struct file *file_in, loff_t pos_in,
+@@ -1673,24 +1673,6 @@ static ssize_t shiftfs_copy_file_range(struct file *file_in, loff_t pos_in,
  				SHIFTFS_COPY);
  }
  
@@ -66,7 +66,7 @@ index 98c9f34ba548..d0f29b4b7aee 100644
  static int shiftfs_iterate_shared(struct file *file, struct dir_context *ctx)
  {
  	const struct cred *oldcred;
-@@ -1658,7 +1640,6 @@ const struct file_operations shiftfs_file_operations = {
+@@ -1718,7 +1700,6 @@ const struct file_operations shiftfs_file_operations = {
  	.unlocked_ioctl		= shiftfs_ioctl,
  	.compat_ioctl		= shiftfs_compat_ioctl,
  	.copy_file_range	= shiftfs_copy_file_range,
@@ -75,5 +75,5 @@ index 98c9f34ba548..d0f29b4b7aee 100644
  
  const struct file_operations shiftfs_dir_operations = {
 -- 
-2.11.0
+2.20.1
 

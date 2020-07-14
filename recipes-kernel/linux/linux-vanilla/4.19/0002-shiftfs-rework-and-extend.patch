@@ -1,7 +1,9 @@
-From ed046e47da6b147aa5a4311f208eac7b80647620 Mon Sep 17 00:00:00 2001
+From 0ed42fa6e4f412819431443489344a1c8f3f759c Mon Sep 17 00:00:00 2001
 From: Christian Brauner <christian@brauner.io>
-Date: Wed, 27 Mar 2019 15:11:26 +0100
-Subject: [PATCH 2/3] shiftfs: rework and extend
+Date: Thu, 4 Apr 2019 15:39:12 +0200
+Subject: [PATCH 02/23] shiftfs: rework and extend
+
+BugLink: https://bugs.launchpad.net/bugs/1823186
 
 /* Introduction */
 The shiftfs filesystem is implemented as a stacking filesystem. Since it is
@@ -74,10 +76,12 @@ block devices cannot be created through shiftfs.
 
 Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
 Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
+Acked-by: Tyler Hicks <tyhicks@canonical.com>
+Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
 ---
  fs/Kconfig   |   10 +
- fs/shiftfs.c | 1847 ++++++++++++++++++++++++++++++++++++++++++++++------------
- 2 files changed, 1488 insertions(+), 369 deletions(-)
+ fs/shiftfs.c | 1852 ++++++++++++++++++++++++++++++++++++++++----------
+ 2 files changed, 1493 insertions(+), 369 deletions(-)
 
 diff --git a/fs/Kconfig b/fs/Kconfig
 index 392c5a41a9f9..691f3c4fc7eb 100644
@@ -101,7 +105,7 @@ index 392c5a41a9f9..691f3c4fc7eb 100644
  
  source "fs/fscache/Kconfig"
 diff --git a/fs/shiftfs.c b/fs/shiftfs.c
-index f7cada126daa..234af4e31736 100644
+index f7cada126daa..ad1ae5bce6c1 100644
 --- a/fs/shiftfs.c
 +++ b/fs/shiftfs.c
 @@ -1,3 +1,4 @@
@@ -812,7 +816,7 @@ index f7cada126daa..234af4e31736 100644
 +static int shiftfs_mknod(struct inode *dir, struct dentry *dentry, umode_t mode,
 +			 dev_t rdev)
 +{
-+	if (S_ISCHR(mode) || S_ISBLK(mode))
++	if (!S_ISFIFO(mode) && !S_ISSOCK(mode))
 +		return -EPERM;
 +
 +	return shiftfs_create_object(dir, dentry, mode, NULL, NULL, false);
@@ -906,7 +910,7 @@ index f7cada126daa..234af4e31736 100644
  
  	return err;
  }
-@@ -445,304 +644,1205 @@ static int shiftfs_rename(struct inode *olddir, struct dentry *old,
+@@ -445,304 +644,1210 @@ static int shiftfs_rename(struct inode *olddir, struct dentry *old,
  static struct dentry *shiftfs_lookup(struct inode *dir, struct dentry *dentry,
  				     unsigned int flags)
  {
@@ -1497,7 +1501,7 @@ index f7cada126daa..234af4e31736 100644
 +	lowerfd->file = realfile;
 +
 +	/* Did the flags change since open? */
-+	if (unlikely(file->f_flags & lowerfd->file->f_flags))
++	if (unlikely(file->f_flags & ~lowerfd->file->f_flags))
 +		return shiftfs_change_flags(lowerfd->file, file->f_flags);
 +
 +	return 0;
@@ -1513,7 +1517,6 @@ index f7cada126daa..234af4e31736 100644
 +	file_info = kmem_cache_zalloc(shiftfs_file_info_cache, GFP_KERNEL);
 +	if (!file_info)
 +		return -ENOMEM;
-+	file->private_data = file_info;
 +
 +	realpath = &file_info->realpath;
 +	realpath->mnt = ssi->mnt;
@@ -1521,10 +1524,11 @@ index f7cada126daa..234af4e31736 100644
 +
 +	realfile = shiftfs_open_realfile(file, realpath);
 +	if (IS_ERR(realfile)) {
-+		kfree(file_info);
++		kmem_cache_free(shiftfs_file_info_cache, file_info);
 +		return PTR_ERR(realfile);
 +	}
 +
++	file->private_data = file_info;
 +	file_info->realfile = realfile;
 +	return 0;
 +}
@@ -1533,8 +1537,13 @@ index f7cada126daa..234af4e31736 100644
 +{
 +	struct shiftfs_file_info *file_info = file->private_data;
 +
-+	fput(file_info->realfile);
-+	kmem_cache_free(shiftfs_file_info_cache, file_info);
++	if (file_info) {
++		if (file_info->realfile)
++			fput(file_info->realfile);
++
++		kmem_cache_free(shiftfs_file_info_cache, file_info);
++	}
++
 +	return 0;
 +}
 +
@@ -2098,7 +2107,8 @@ index f7cada126daa..234af4e31736 100644
 +
 +	return 0;
 +}
-+
+ 
+-	err = -EPERM;
 +static const struct super_operations shiftfs_super_ops = {
 +	.put_super	= shiftfs_put_super,
 +	.show_options	= shiftfs_show_options,
@@ -2126,8 +2136,7 @@ index f7cada126daa..234af4e31736 100644
 +
 +	if (!data->path)
 +		return -EINVAL;
- 
--	err = -EPERM;
++
 +	sb->s_fs_info = kzalloc(sizeof(*sbinfo), GFP_KERNEL);
 +	if (!sb->s_fs_info)
 +		return -ENOMEM;
@@ -2298,7 +2307,7 @@ index f7cada126daa..234af4e31736 100644
  	return err;
  }
  
-@@ -764,17 +1864,26 @@ static struct file_system_type shiftfs_type = {
+@@ -764,17 +1869,26 @@ static struct file_system_type shiftfs_type = {
  
  static int __init shiftfs_init(void)
  {
@@ -2327,5 +2336,5 @@ index f7cada126daa..234af4e31736 100644
  module_init(shiftfs_init)
  module_exit(shiftfs_exit)
 -- 
-2.11.0
+2.20.1
 
