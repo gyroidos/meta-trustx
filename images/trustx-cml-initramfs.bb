@@ -25,6 +25,7 @@ PACKAGE_INSTALL = "\
 	${ROOTFS_BOOTSTRAP_INSTALL} \
 	cml-boot \
 	iproute2 \
+	lxcfs \
 "
 
 PACKAGE_INSTALL += "\
