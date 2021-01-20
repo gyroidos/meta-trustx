@@ -104,7 +104,7 @@ do_build_trustmeimage () {
 		exit 1
 	fi
 
-if [ -z "${TRUSTME_CONTAINER_ARCH_${MACHINE}}" ];then
+	if [ -z "${TRUSTME_CONTAINER_ARCH_${MACHINE}}" ];then
 		bbfatal_log "Cannot get bitbake variable \"TRUSTME_CONTAINER_ARCH_${MACHINE}\""
 		exit 1
 	fi
@@ -185,6 +185,10 @@ if [ -z "${TRUSTME_CONTAINER_ARCH_${MACHINE}}" ];then
 		cp ${cfg_overlay_dir}/${TRUSTME_HARDWARE}/device.conf "${rootfs_datadir}/cml/"
 	fi
 
+	# sign container configs
+	find "${rootfs_datadir}/cml/containers_templates" -name '*.conf' -exec bash \
+		${enrollment_dir}/config_creator/sign_config.sh {} \
+		${TEST_CERT_DIR}/ssig.key ${TEST_CERT_DIR}/ssig.cert \;
 
 	# copy modules to data partition directory
 	kernelabiversion="$(cat "${STAGING_KERNEL_BUILDDIR}/kernel-abiversion")"
