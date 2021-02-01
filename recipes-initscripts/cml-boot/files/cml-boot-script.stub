@@ -76,14 +76,20 @@ if [ -e "/dev/tpm0" ]; then
 
 	# if crypto hdd is unencrypted, initially encrypt it here
 	if [ "$do_otf" == "do" ]; then
+		exec > /dev/console
+		exec 2>&1
+
 		size=$(fdisk -l /dev/${CRYPTO_HDD} | head -n1 | awk '{print $5}')
-		echo "Doing on-the-fly encryption of ${CRYPTO_HDD} size=${size} (see ${LOGTTY}) ... " > /dev/console
-		dd if=/dev/${CRYPTO_HDD} | pv -s ${size} | dd of=/dev/mapper/${CRYPTO_HDD} bs=512
+		echo "-- Doing on-the-fly encryption of ${CRYPTO_HDD} size=${size} ..."
+		dd if=/dev/${CRYPTO_HDD} bs=512 status=none | pv -s ${size} | dd of=/dev/mapper/${CRYPTO_HDD} bs=512
 		if [ $? -ne 0 ]; then
-			echo "\nFATAL: Encryption failed! Restart System Setup!" > /dev/console
+			echo "-- FATAL: Encryption failed! Restart System Setup!"
 			exit 1;
 		fi
-		echo "[OK]" /dev/console
+		echo "-- Encryption of ${CRYPTO_HDD} done!"
+
+		exec > /dev/$LOGTTY
+		exec 2>&1
 	fi
 
 	mount /dev/mapper/${CRYPTO_HDD} /mnt
