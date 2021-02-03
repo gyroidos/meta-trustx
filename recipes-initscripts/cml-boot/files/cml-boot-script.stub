@@ -123,8 +123,9 @@ mount -a
 
 mkdir -p /var/volatile/tmp
 
-if [ ! -f "/data/cml/containers/00000000-0000-0000-0000-000000000000.conf" ]; then
-	cp /data/cml/containers_templates/00000000-0000-0000-0000-000000000000.conf /data/cml/containers/00000000-0000-0000-0000-000000000000.conf
+for suffix in conf sig cert; do
+	if [ ! -f "/data/cml/containers/00000000-0000-0000-0000-000000000000.$suffix" ]; then
+		cp /data/cml/containers_templates/00000000-0000-0000-0000-000000000000.$suffix /data/cml/containers/00000000-0000-0000-0000-000000000000.$suffix
 fi
 
 if [ -e "/dev/tpm0" ]; then
