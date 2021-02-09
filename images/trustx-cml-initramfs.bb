@@ -66,6 +66,11 @@ update_inittab () {
 }
 
 #TODO modsigning option in image fstype?
+TEST_CERT_DIR = "${TOPDIR}/test_certificates"
+install_ima_cert () {
+	mkdir -p ${IMAGE_ROOTFS}/etc/keys
+	cp ${TEST_CERT_DIR}/certs/signing_key.x509 ${IMAGE_ROOTFS}/etc/keys/x509_ima.der
+}
 
 update_modules_dep () {
 	if [ -d "${IMAGE_ROOTFS}/lib/modules" ];then
@@ -87,6 +92,7 @@ cleanup_boot () {
 ROOTFS_POSTPROCESS_COMMAND_append = " update_modules_dep; "
 ROOTFS_POSTPROCESS_COMMAND_append = " update_hostname; "
 ROOTFS_POSTPROCESS_COMMAND_append = " cleanup_boot; "
+ROOTFS_POSTPROCESS_COMMAND_append = " install_ima_cert; "
 
 # For debug purpose allow login if debug-tweaks is set in local.conf
 ROOTFS_POSTPROCESS_COMMAND_append = '${@bb.utils.contains_any("EXTRA_IMAGE_FEATURES", [ 'debug-tweaks' ], " update_inittab ; ", "",d)}'

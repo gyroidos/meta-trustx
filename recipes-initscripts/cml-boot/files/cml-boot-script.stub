@@ -22,6 +22,16 @@ mount /sys
 mount /dev
 mount /run
 
+mkdir -p /sys/kernel/security
+mount -t securityfs securityfs /sys/kernel/security
+
+echo -n "\
+appraise func=MODULE_CHECK appraise_type=imasig|modsig
+measure func=MODULE_CHECK template=ima-modsig
+appraise func=FIRMWARE_CHECK
+measure func=FIRMWARE_CHECK template=ima-sig
+" > /sys/kernel/security/ima/policy
+
 mkdir -p /dev/pts
 mount /dev/pts
 
