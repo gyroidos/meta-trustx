@@ -1,6 +1,6 @@
 SUMMARY = "Firmware Image for CML."
 
-PACKAGE_INSTALL = "linux-firmware"
+PACKAGE_INSTALL = "linux-firmware wireless-regdb-static"
 IMAGE_INSTALL = ""
 IMAGE_LINGUAS = ""
 ROOTFS_BOOTSTRAP_INSTALL = ""
@@ -12,13 +12,14 @@ IMAGE_FEATURES_remove += "package-management"
 inherit image
 
 move_firmware() {
-	mv ${IMAGE_ROOTFS}/lib/firmware ${IMAGE_ROOTFS}/firmware
+	mv ${IMAGE_ROOTFS}/lib/firmware/* ${IMAGE_ROOTFS}/
 }
 
 cleanup_root() {
 	rm -rf ${IMAGE_ROOTFS}/etc
 	rm -rf ${IMAGE_ROOTFS}/run
 	rm -rf ${IMAGE_ROOTFS}/var
+	rmdir ${IMAGE_ROOTFS}/lib/firmware
 	rmdir ${IMAGE_ROOTFS}/lib
 }
 
