@@ -50,6 +50,12 @@ sleep 2
 udevadm settle
 
 if [ -e "/dev/tpm0" ]; then
+	echo "Waiting for '/dev/disk/by-label/boot' "
+	while [ ! -e /dev/disk/by-label/boot ]; do
+		echo -n "."
+		sleep 1
+	done
+
 	CRYPTO_HDD=$(basename $(readlink /dev/disk/by-label/trustme))
 	BOOT_HDD=$(basename $(readlink /dev/disk/by-label/boot))
 
