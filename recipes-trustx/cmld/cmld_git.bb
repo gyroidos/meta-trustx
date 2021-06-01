@@ -28,6 +28,7 @@ DEPENDS = "protobuf-c-native protobuf-c libselinux protobuf-c-text libcap e2fspr
 EXTRA_OEMAKE = "TRUSTME_HARDWARE=${TRUSTME_HARDWARE}"
 EXTRA_OEMAKE += "TRUSTME_SCHSM=${TRUSTME_SCHSM}"
 EXTRA_OEMAKE += "DEVELOPMENT_BUILD=${DEVELOPMENT_BUILD}"
+EXTRA_OEMAKE += "CC_MODE=${CC_MODE}"
 
 do_configure () {
     :
