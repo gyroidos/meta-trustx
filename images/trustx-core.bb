@@ -33,8 +33,9 @@ do_sign_guestos_append () {
 
     cp ${CFG_OVERLAY_DIR}/${TRUSTME_HARDWARE}/00000000-0000-0000-0000-000000000000.conf ${CONFIGS_OUT}/container
     sed -i '/guest_os:*/c\guest_os: \"${PN}os\"' ${CONFIGS_OUT}/container/00000000-0000-0000-0000-000000000000.conf
+    sed -i '/guestos_version:*/c\guestos_version: ${TRUSTME_VERSION}' ${CONFIGS_OUT}/container/00000000-0000-0000-0000-000000000000.conf
 
-    cp ${CFG_OVERLAY_DIR}/${TRUSTME_HARDWARE}/device.conf ${CONFIGS_OUT}
+    cp -f ${CFG_OVERLAY_DIR}/${TRUSTME_HARDWARE}/device.conf ${CONFIGS_OUT}
     sed -i '/c0os:*/c\c0os: \"${PN}os\"' ${CONFIGS_OUT}/device.conf
 }
 
