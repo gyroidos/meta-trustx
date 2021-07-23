@@ -6,7 +6,7 @@ DEPENDS += "openssl attr keyutils"
 
 DEPENDS_class-native += "openssl-native keyutils-native"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/linux-ima/ima-evm-utils-${PV}.tar.gz;downloadfilename=ima-evm-utils-${PV}.tar.gz"
+SRC_URI = "${SOURCEFORGE_MIRROR}/linux-ima/ima-evm-utils/ima-evm-utils-${PV}.tar.gz;downloadfilename=ima-evm-utils-${PV}.tar.gz"
 
 SRC_URI[md5sum] = "55cc0e2c77a725f722833c3b4a36038c"
 SRC_URI[sha256sum] = "c2b206e7f9fbe62a938b7ae59e31906fefae4d5351fe01db739bd8346b75d4a7"
