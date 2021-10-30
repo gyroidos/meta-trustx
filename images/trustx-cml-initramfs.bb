@@ -4,7 +4,6 @@ PACKAGE_INSTALL = "\
 	${VIRTUAL-RUNTIME_base-utils} \
 	udev \
 	base-files \
-	libselinux \
 	cmld \
 	service-static \
 	scd \
