@@ -1,7 +1,10 @@
-From 3887e153a320b278228e1cbb6da0105e019b9583 Mon Sep 17 00:00:00 2001
+From 5907f1ece6563c7f814453a7ec764d65b49aa0f8 Mon Sep 17 00:00:00 2001
 From: Richard Guy Briggs <rgb@redhat.com>
 Date: Mon, 19 Feb 2018 10:16:28 -0500
-Subject: [PATCH 07/17] audit: log container info of syscalls
+Subject: [PATCH] audit: log container info of syscalls
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
 Create a new audit record AUDIT_CONTAINER_ID to document the audit
 container identifier of a process if it is present.
@@ -29,6 +32,7 @@ Acked-by: Serge Hallyn <serge@hallyn.com>
 Acked-by: Steve Grubb <sgrubb@redhat.com>
 Acked-by: Neil Horman <nhorman@tuxdriver.com>
 Reviewed-by: Ondrej Mosnacek <omosnace@redhat.com>
+Signed-off-by: Michael Weiß <michael.weiss@aisec.fraunhofer.de> # fix audit.h numbering
 ---
  include/linux/audit.h      |  5 +++++
  include/uapi/linux/audit.h |  1 +
@@ -37,7 +41,7 @@ Reviewed-by: Ondrej Mosnacek <omosnace@redhat.com>
  4 files changed, 40 insertions(+), 6 deletions(-)
 
 diff --git a/include/linux/audit.h b/include/linux/audit.h
-index 4b68cb409bca..27629b4f9d0a 100644
+index 4b68cb409..27629b4f9 100644
 --- a/include/linux/audit.h
 +++ b/include/linux/audit.h
 @@ -215,6 +215,8 @@ static inline u64 audit_get_contid(struct task_struct *tsk)
@@ -60,19 +64,19 @@ index 4b68cb409bca..27629b4f9d0a 100644
  
  static inline int audit_signal_info(int sig, struct task_struct *t)
 diff --git a/include/uapi/linux/audit.h b/include/uapi/linux/audit.h
-index 5d0ea2a6783e..2dcaa2031f77 100644
+index a52a9f4fb..e9956c074 100644
 --- a/include/uapi/linux/audit.h
 +++ b/include/uapi/linux/audit.h
-@@ -117,6 +117,7 @@
- #define AUDIT_FANOTIFY		1331	/* Fanotify access decision */
- #define AUDIT_TIME_INJOFFSET	1332	/* Timekeeping offset injected */
+@@ -119,6 +119,7 @@
  #define AUDIT_TIME_ADJNTPVAL	1333	/* NTP value adjustment */
-+#define AUDIT_CONTAINER_ID	1335	/* Container ID */
+ #define AUDIT_DM_CTRL		1338	/* Device Mapper target control */
+ #define AUDIT_DM_EVENT		1339	/* Device Mapper events */
++#define AUDIT_CONTAINER_ID	1340	/* Container ID */
  
  #define AUDIT_AVC		1400	/* SE Linux avc denial or grant */
  #define AUDIT_SELINUX_ERR	1401	/* Internal SE Linux Errors */
 diff --git a/kernel/audit.c b/kernel/audit.c
-index 96a2a99eabd7..ee8c08444e83 100644
+index 96a2a99ea..ee8c08444 100644
 --- a/kernel/audit.c
 +++ b/kernel/audit.c
 @@ -2156,6 +2156,26 @@ void audit_log_session_info(struct audit_buffer *ab)
@@ -103,7 +107,7 @@ index 96a2a99eabd7..ee8c08444e83 100644
  {
  	audit_log_format(ab, " key=");
 diff --git a/kernel/auditsc.c b/kernel/auditsc.c
-index bd855794ad26..ac438fcff807 100644
+index bd855794a..ac438fcff 100644
 --- a/kernel/auditsc.c
 +++ b/kernel/auditsc.c
 @@ -1534,7 +1534,7 @@ static void audit_log_exit(void)
@@ -151,5 +155,5 @@ index bd855794ad26..ac438fcff807 100644
  
  	/* Send end of event record to help user space know we are finished */
 -- 
-2.20.1
+2.30.2
 
