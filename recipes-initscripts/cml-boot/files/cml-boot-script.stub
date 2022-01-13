@@ -1,3 +1,11 @@
+function scan_devices {
+	udevadm trigger --type=subsystems --action=add
+	sleep 2
+	udevadm settle
+	udevadm trigger --type=devices --action=add
+	sleep 2
+	udevadm settle
+}
 
 clear
 
@@ -42,19 +50,14 @@ mkdir -p /dev/shm
 mkdir -p /data
 
 udevd --daemon
-udevadm trigger --type=subsystems --action=add
-sleep 2
-udevadm settle
-udevadm trigger --type=devices --action=add
-sleep 2
-udevadm settle
+scan_devices
 
 if [ -e "/dev/tpm0" ]; then
 	echo "$(blkid)"
 	echo "Waiting for '/dev/disk/by-label/boot' "
 	while [ ! -e /dev/disk/by-label/boot ] && [ ! -e /dev/disk/by-label/BOOT ];do
 		echo -n "."
-		sleep 1
+		scan_devices
 	done
 
 	CRYPTO_HDD=$(basename $(readlink /dev/disk/by-label/trustme))
@@ -145,15 +148,10 @@ fi
 mkdir -p /data/logs
 
 #now modules partition is mounted
-echo "Waiting for devices ."
+echo "Waiting for devices"
 for i in {1..4}; do
 	echo -n "."
-	udevadm trigger --type=subsystems --action=add
-	sleep 2
-	udevadm settle
-	udevadm trigger --type=devices --action=add
-	sleep 2
-	udevadm settle
+	scan_devices
 done
 
 modprobe loop
