@@ -19,6 +19,7 @@ do_compile() {
 	# random string to ignore SSTATE_MIRROR
     if [ ! -f ${TEST_CERT_DIR}.generating ]; then
         touch ${TEST_CERT_DIR}.generating
+        export DO_PLATFORM_KEYS=${PKI_UEFI_KEYS}
         bash ${PROVISIONING_DIR}/gen_dev_certs.sh ${TEST_CERT_DIR}
         if [ ! -d ${TEST_CERT_DIR}/certs ]; then
             mkdir -p ${TEST_CERT_DIR}/certs
@@ -26,7 +27,9 @@ do_compile() {
         openssl x509 -in ${TEST_CERT_DIR}/ssig_subca.cert -outform DER -out ${TEST_CERT_DIR}/certs/signing_key.x509
         cp ${TEST_CERT_DIR}/ssig_subca.key ${TEST_CERT_DIR}/certs/signing_key.pem
         openssl x509 -in ${TEST_CERT_DIR}/ssig_subca.cert -outform PEM >> ${TEST_CERT_DIR}/certs/signing_key.pem
-        openssl x509 -in ${TEST_CERT_DIR}/PK.crt -outform DER -out ${TEST_CERT_DIR}/PK.cer
+        if [ -f ${TEST_CERT_DIR}/PK.crt ]; then 
+            openssl x509 -in ${TEST_CERT_DIR}/PK.crt -outform DER -out ${TEST_CERT_DIR}/PK.cer
+        fi
         rm ${TEST_CERT_DIR}.generating
     fi
 }
