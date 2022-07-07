@@ -35,6 +35,7 @@ DEBUG_PACKAGES = "\
 	gptfdisk \
 	parted \
 	util-linux-sfdisk \
+	util-linux \
 "
 
 PACKAGE_INSTALL_append = '${@bb.utils.contains_any("EXTRA_IMAGE_FEATURES", [ 'debug-tweaks' ], "${DEBUG_PACKAGES}", "",d)}'
