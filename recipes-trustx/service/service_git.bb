@@ -31,7 +31,7 @@ do_compile () {
 do_install () {
         :
 	install -d ${D}/${base_sbindir}/
-	install -m 0755 ${S}/service/cml-service-container ${D}${base_sbindir}/
+	install -m 0755 ${S}/service/cml-service-container ${D}/${base_sbindir}/
 	install -d ${D}/${bindir}/
 	install -m 0755 ${S}/converter/converter ${D}${bindir}/
 
