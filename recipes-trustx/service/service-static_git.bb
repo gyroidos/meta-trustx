@@ -5,7 +5,7 @@ require recipes-trustx/cmld/cml-common.inc
 
 DEPENDS = "protobuf-c-native protobuf-c protobuf-c-text"
 
-FILES_${PN} += "${base_sbindir}"
+FILES:${PN} += "${base_sbindir}"
 INHIBIT_PACKAGE_STRIP = "1"
 
 do_compile () {

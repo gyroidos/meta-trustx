@@ -1,8 +1,8 @@
 require recipes-trustx/cmld/cml-common.inc
 
-FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
+FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
 
-SRC_URI_append = "\
+SRC_URI:append = "\
 	file://ssig_pki_generator.conf \
 	file://openssl-dockerlocal-rootca.cnf \
 	file://openssl-dockerlocal-subca.cnf \
@@ -11,11 +11,11 @@ SRC_URI_append = "\
 
 PACKAGES =+ "converter"
 
-INSANE_SKIP_converter = "ldflags"
+INSANE_SKIP:converter = "ldflags"
 
 DEPENDS = "protobuf-c-native protobuf-c protobuf-c-text libtar zlib openssl"
 
-FILES_${PN} += "${base_sbindir}"
+FILES:${PN} += "${base_sbindir}"
 INHIBIT_PACKAGE_STRIP = "1"
 
 SCRIPT_DIR = "${TOPDIR}/../trustme/build"
@@ -48,9 +48,9 @@ do_install () {
 	cp ${S}/daemon/*.proto ${DEPLOY_DIR_IMAGE}/proto
 }
 
-RDEPENDS_converter += "bash openssl libtar zlib curl squashfs-tools libgcc"
+RDEPENDS:converter += "bash openssl libtar zlib curl squashfs-tools libgcc"
 
-FILES_converter = "\
+FILES:converter = "\
 	${bindir}/converter \
 	pki_generator/* \
 "

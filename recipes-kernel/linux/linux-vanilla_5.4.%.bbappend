@@ -68,4 +68,4 @@ SRC_URI += "\
 "
 
 
-FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}:"
+FILESEXTRAPATHS:prepend := "${THISDIR}/${PN}:"
