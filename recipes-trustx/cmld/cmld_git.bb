@@ -39,10 +39,10 @@ do_install () {
     install -m 0644 ${S}/common/*.h ${D}/${includedir}/common
 
     install -d ${D}/${includedir}/proto
-    install -m 0644 ${S}/daemon/*.proto ${D}${includedir}/proto
+    install -m 0644 ${S}/daemon/*.proto ${D}/${includedir}/proto
     if [ "y" = "${CC_MODE}" ]; then
         # if building cc_mode override files with respective cc_mode version
-        install -m 0644 ${S}/daemon/cc_mode/*.proto ${D}${includedir}/proto
+        install -m 0644 ${S}/daemon/cc_mode/*.proto ${D}/${includedir}/proto
     fi
 }
 
