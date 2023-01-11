@@ -1,4 +1,4 @@
-From fb4c8e4b655525df45cc1e21cba74bc660cd6996 Mon Sep 17 00:00:00 2001
+From 7788a79637cf55c686159467a589ec45d2d2a51a Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Michael=20Wei=C3=9F?= <michael.weiss@aisec.fraunhofer.de>
 Date: Sat, 4 Sep 2021 11:59:28 +0200
 Subject: [PATCH 1/3] dm: introduce audit event module for device mapper
@@ -117,7 +117,7 @@ Signed-off-by: Mike Snitzer <snitzer@redhat.com>
  create mode 100644 drivers/md/dm-audit.h
 
 diff --git a/drivers/md/Kconfig b/drivers/md/Kconfig
-index aa98953f4462..a3f8231a19ee 100644
+index aa98953f4..a3f8231a1 100644
 --- a/drivers/md/Kconfig
 +++ b/drivers/md/Kconfig
 @@ -597,4 +597,13 @@ config DM_ZONED
@@ -135,7 +135,7 @@ index aa98953f4462..a3f8231a19ee 100644
 +
  endif # MD
 diff --git a/drivers/md/Makefile b/drivers/md/Makefile
-index d91a7edcd2ab..a2a0211e237d 100644
+index d91a7edcd..a2a0211e2 100644
 --- a/drivers/md/Makefile
 +++ b/drivers/md/Makefile
 @@ -87,3 +87,7 @@ endif
@@ -148,7 +148,7 @@ index d91a7edcd2ab..a2a0211e237d 100644
 +endif
 diff --git a/drivers/md/dm-audit.c b/drivers/md/dm-audit.c
 new file mode 100644
-index 000000000000..20294fe6f273
+index 000000000..c206d1709
 --- /dev/null
 +++ b/drivers/md/dm-audit.c
 @@ -0,0 +1,84 @@
@@ -224,8 +224,8 @@ index 000000000000..20294fe6f273
 +		      struct bio *bio, sector_t sector, int result)
 +{
 +	struct audit_buffer *ab;
-+	int dev_major = MAJOR(bio->bi_disk->major);
-+	int dev_minor = MINOR(bio->bi_disk->first_minor);
++	int dev_major = bio->bi_disk->major;
++	int dev_minor = bio->bi_disk->first_minor;
 +
 +	ab = dm_audit_log_start(AUDIT_DM_EVENT, dm_msg_prefix, op);
 +	if (unlikely(!ab))
@@ -238,7 +238,7 @@ index 000000000000..20294fe6f273
 +EXPORT_SYMBOL_GPL(dm_audit_log_bio);
 diff --git a/drivers/md/dm-audit.h b/drivers/md/dm-audit.h
 new file mode 100644
-index 000000000000..2385f2b659be
+index 000000000..2385f2b65
 --- /dev/null
 +++ b/drivers/md/dm-audit.h
 @@ -0,0 +1,66 @@
@@ -309,7 +309,7 @@ index 000000000000..2385f2b659be
 +
 +#endif
 diff --git a/include/uapi/linux/audit.h b/include/uapi/linux/audit.h
-index c89c6495983d..f7dd604f5685 100644
+index c89c64959..f7dd604f5 100644
 --- a/include/uapi/linux/audit.h
 +++ b/include/uapi/linux/audit.h
 @@ -116,6 +116,8 @@
@@ -322,5 +322,5 @@ index c89c6495983d..f7dd604f5685 100644
  #define AUDIT_AVC		1400	/* SE Linux avc denial or grant */
  #define AUDIT_SELINUX_ERR	1401	/* Internal SE Linux Errors */
 -- 
-2.20.1
+2.30.2
 

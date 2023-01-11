@@ -1,4 +1,4 @@
-From 27a670c8bb402002498bd8bed747b8c13ac439cb Mon Sep 17 00:00:00 2001
+From 295df1f50726754d95c309c39c6d190dc5a39f1a Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Michael=20Wei=C3=9F?= <michael.weiss@aisec.fraunhofer.de>
 Date: Sat, 4 Sep 2021 11:59:29 +0200
 Subject: [PATCH 2/3] dm integrity: log audit events for dm-integrity target
@@ -26,7 +26,7 @@ Signed-off-by: Mike Snitzer <snitzer@redhat.com>
  2 files changed, 21 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/md/Kconfig b/drivers/md/Kconfig
-index a3f8231a19ee..ca6114d77366 100644
+index a3f8231a1..ca6114d77 100644
 --- a/drivers/md/Kconfig
 +++ b/drivers/md/Kconfig
 @@ -566,6 +566,7 @@ config DM_INTEGRITY
@@ -47,7 +47,7 @@ index a3f8231a19ee..ca6114d77366 100644
  
  	  Enables audit logging of several security relevant events in the
 diff --git a/drivers/md/dm-integrity.c b/drivers/md/dm-integrity.c
-index dab4446fe7d8..01cd06aaf2ea 100644
+index dab4446fe..01cd06aaf 100644
 --- a/drivers/md/dm-integrity.c
 +++ b/drivers/md/dm-integrity.c
 @@ -21,6 +21,8 @@
@@ -130,5 +130,5 @@ index dab4446fe7d8..01cd06aaf2ea 100644
  
  static struct target_type integrity_target = {
 -- 
-2.20.1
+2.30.2
 
