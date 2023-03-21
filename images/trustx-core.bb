@@ -62,7 +62,7 @@ update_inittab () {
 }
 
 update_hostname () {
-    echo "trustx-core" > ${IMAGE_ROOTFS}/etc/hostname
+    echo "core" > ${IMAGE_ROOTFS}/etc/hostname
 }
 
 update_network_interfaces () {
