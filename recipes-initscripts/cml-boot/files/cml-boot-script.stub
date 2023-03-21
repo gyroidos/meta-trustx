@@ -7,8 +7,6 @@ function scan_devices {
 	udevadm settle
 }
 
-clear
-
 cat /etc/init_ascii
 
 echo "-- cml init log on $LOGTTY [ready]"
