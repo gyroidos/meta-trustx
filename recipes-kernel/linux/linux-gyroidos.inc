@@ -1,4 +1,5 @@
 SRC_URI += " \
+	file://0001-video-logo-GyroidOS-specific-logo.patch \
 	file://module_signing.cfg \
 	file://trustx.cfg \
 "
