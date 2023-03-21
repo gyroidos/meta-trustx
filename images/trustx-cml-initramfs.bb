@@ -93,7 +93,7 @@ update_modules_dep () {
 }
 
 update_hostname () {
-    echo "trustx-cml" > ${IMAGE_ROOTFS}/etc/hostname
+    echo "cml" > ${IMAGE_ROOTFS}/etc/hostname
 }
 
 cleanup_boot () {
