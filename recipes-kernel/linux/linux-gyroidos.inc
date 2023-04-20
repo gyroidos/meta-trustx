@@ -1,5 +1,6 @@
 SRC_URI += " \
 	file://0001-video-logo-GyroidOS-specific-logo.patch \
+	file://0001-audit-allow-logging-of-user-events-in-non-initial-na.patch \
 	file://module_signing.cfg \
 	file://trustx.cfg \
 "

@@ -1,0 +1,55 @@
+From 2e727bd8702d132b30e0056da51dabb36e658fb2 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Michael=20Wei=C3=9F?= <michael.weiss@aisec.fraunhofer.de>
+Date: Sun, 9 May 2021 20:12:39 +0200
+Subject: [PATCH] audit: allow logging of user events in non-initial namespace.
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Audit subsystem was disabled in total for user namespaces other than
+the initial namespace.
+
+If audit is enabled by kernel command line or audtid in initial namespace,
+it is now possible to allow at least logging of userspace applications
+inside of non-initial namespaces if CAP_AUDIT_WRITE in the corresponding
+namespace is held.
+
+This allows logging of, e.g., PAM or opensshd inside user namespaced
+system containers.
+
+Signed-off-by: Michael Weiß <michael.weiss@aisec.fraunhofer.de>
+---
+ kernel/audit.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/kernel/audit.c b/kernel/audit.c
+index 121d37e700a6..b5cc0669c3d7 100644
+--- a/kernel/audit.c
++++ b/kernel/audit.c
+@@ -1012,7 +1012,13 @@ static int audit_netlink_ok(struct sk_buff *skb, u16 msg_type)
+ 	 * userspace will reject all logins.  This should be removed when we
+ 	 * support non init namespaces!!
+ 	 */
+-	if (current_user_ns() != &init_user_ns)
++	/*
++	 * If audit is enabled by kernel command line or audtid in the initial
++	 * namespace allow at least logging of userspace applications inside of
++	 * non-initial namespaces according to CAP_AUDIT_WRITE is held in the
++	 * corresponding namespace.
++	 */
++	if ((current_user_ns() != &init_user_ns) && !audit_enabled)
+ 		return -ECONNREFUSED;
+ 
+ 	switch (msg_type) {
+@@ -1043,7 +1049,7 @@ static int audit_netlink_ok(struct sk_buff *skb, u16 msg_type)
+ 	case AUDIT_USER:
+ 	case AUDIT_FIRST_USER_MSG ... AUDIT_LAST_USER_MSG:
+ 	case AUDIT_FIRST_USER_MSG2 ... AUDIT_LAST_USER_MSG2:
+-		if (!netlink_capable(skb, CAP_AUDIT_WRITE))
++		if (!netlink_ns_capable(skb, current_user_ns(), CAP_AUDIT_WRITE))
+ 			err = -EPERM;
+ 		break;
+ 	default:  /* bad msg */
+-- 
+2.30.2
+
