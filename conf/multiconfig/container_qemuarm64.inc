@@ -20,6 +20,8 @@ PREFERRED_PROVIDER_virtual/kernel = "linux-dummy"
 PREFERRED_PROVIDER_virtual/kernel:gyroidos-core = "linux-dummy"
 PREFERRED_PROVIDER_virtual/kernel:linuxstdbase = "linux-dummy"
 
+KERNEL_DEVICETREE = ""
+
 IMAGE_FSTYPES = "cpio.gz ext4"
 
 # Possible provider: cacao-initial-native and jamvm-initial-native
