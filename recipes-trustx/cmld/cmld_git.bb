@@ -14,6 +14,8 @@ EXTRA_OEMAKE += "TRUSTME_SCHSM=${TRUSTME_SCHSM}"
 EXTRA_OEMAKE += "DEVELOPMENT_BUILD=${DEVELOPMENT_BUILD}"
 EXTRA_OEMAKE += "CC_MODE=${CC_MODE}"
 
+EXTRA_OEMAKE += '${@oe.utils.conditional("PREFERRED_PROVIDER_virtual/kernel", "linux-rolling-stable", "IDMAPPED=y", "", d)}'
+
 do_compile () {
     oe_runmake -C daemon
     oe_runmake -C control
