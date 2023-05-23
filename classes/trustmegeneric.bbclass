@@ -20,7 +20,7 @@ TRUSTME_IMAGE_TMP="${B}/tmp_trustmeimage"
 TRUSTME_IMAGE_OUT="${B}/trustme_image"
 TRUSTME_IMAGE="${TRUSTME_IMAGE_OUT}/trustmeimage.img"
 
-TRUSTME_DATAPART_EXTRA_SPACE?="100"
+TRUSTME_DATAPART_EXTRA_SPACE?="1024"
 TRUSTME_BOOTPART_EXTRA_FACTOR?="1.2"
 TRUSTME_BOOTPART_FS="fat16"
 TRUSTME_BOOTPART_ALIGN="4096"
@@ -35,6 +35,7 @@ TRUSTME_GENERIC_DEPENDS = " \
     dosfstools-native:do_populate_sysroot \
     gptfdisk-native:do_populate_sysroot \
     trustx-cml-initramfs:do_image_complete \
+    trustx-cml-modules:do_image_complete \
     trustx-cml-firmware:do_image_complete \
     virtual/kernel:do_deploy \
 "
@@ -192,17 +193,8 @@ do_build_trustmeimage () {
 		${TEST_CERT_DIR}/ssig_cml.key ${TEST_CERT_DIR}/ssig_cml.cert \;
 
 	# copy modules to data partition directory
-	kernelabiversion="$(cat "${STAGING_KERNEL_BUILDDIR}/kernel-abiversion")"
-	if [ -d "${DEPLOY_DIR_IMAGE}/cml-kernel/modules/lib/modules/${kernelabiversion}" ]; then
-		rm -rf "${tmp_modules}/lib/modules"
-		mkdir -p "${tmp_modules}/lib"
-		unsquashfs -d "${tmp_modules}/lib/modules" "${DEPLOY_DIR_IMAGE}/cml-kernel/modules-${MODULE_TARBALL_LINK_NAME}.squashfs"
-		cp -rf ${DEPLOY_DIR_IMAGE}/cml-kernel/modules/lib/modules/${kernelabiversion}/* "${tmp_modules}/lib/modules/${kernelabiversion}/"
-		bbnote "Updating modules dependencies for kernel $kernelabiversion"
-		sh -c "cd \"${tmp_modules}\" && depmod --basedir \"${tmp_modules}\" ${kernelabiversion}"
-		mksquashfs "${tmp_modules}/lib/modules" "${DEPLOY_DIR_IMAGE}/cml-kernel/modules-${MODULE_TARBALL_LINK_NAME}.squashfs" -noappend
-	fi
-	cp -fL "${DEPLOY_DIR_IMAGE}/cml-kernel/modules-${MODULE_TARBALL_LINK_NAME}.squashfs" "${tmp_datapart}/modules.img"
+	bbnote "Copying linux-modules"
+	cp -fL "${DEPLOY_DIR_IMAGE}/trustx-cml-modules-${MACHINE}.squashfs" "${tmp_datapart}/modules.img"
 
 	# copy firmware to data partition directory
 	bbnote "Copying linux-firmware"
