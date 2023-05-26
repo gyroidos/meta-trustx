@@ -7,14 +7,18 @@ PROVISIONING_DIR = "${SCRIPT_DIR}/device_provisioning"
 ENROLLMENT_DIR = "${PROVISIONING_DIR}/oss_enrollment"
 TEST_CERT_DIR = "${TOPDIR}/test_certificates"
 
-GUESTS_OUT ?= "${DEPLOY_DIR_IMAGE}/trustx-guests"
+GUESTS_OUT ?= "${B}/trustx-guests"
 CLEAN_GUEST_OUT ?= "1"
+
+CONFIGS_OUT ?= ""
 
 TRUSTME_VERSION ?= "${@'${IMAGE_VERSION_SUFFIX}'.replace('-','')}"
 
 DEPENDS += " pki-native python3-native protobuf-native python3-protobuf-native protobuf-c-native cryptsetup-native cmld"
 
 OS_NAME ?= "${PN}os"
+
+IMAGE_POSTPROCESS_COMMAND:append = " do_sign_guestos; do_deploy_guestos; "
 
 do_sign_guestos () {
     trustme_version=${TRUSTME_VERSION}
@@ -27,21 +31,21 @@ do_sign_guestos () {
         done
     fi
 
-    if [ -f ${DEPLOY_DIR_IMAGE}/${IMAGE_BASENAME}-${MACHINE}.squashfs ]; then
+    if [ -f ${IMGDEPLOYDIR}/${IMAGE_BASENAME}-${MACHINE}.squashfs ]; then
 
-        trustme_version="$(readlink ${DEPLOY_DIR_IMAGE}/${IMAGE_BASENAME}-${MACHINE}.squashfs | sed -e 's/${IMAGE_BASENAME}-${MACHINE}-//' | sed -e 's/.rootfs.squashfs//' )"
+        trustme_version="$(readlink ${IMGDEPLOYDIR}/${IMAGE_BASENAME}-${MACHINE}.squashfs | sed -e 's/${IMAGE_BASENAME}-${MACHINE}-//' | sed -e 's/.rootfs.squashfs//' )"
         mkdir -p ${GUESTS_OUT}/${OS_NAME}-${trustme_version}/
 
-        dd if=/dev/zero of=${DEPLOY_DIR_IMAGE}/${IMAGE_BASENAME}-${MACHINE}.hash bs=1M count=10
+        dd if=/dev/zero of=${B}/${IMAGE_BASENAME}-${MACHINE}.hash bs=1M count=10
 
-        root_hash=$(veritysetup format ${DEPLOY_DIR_IMAGE}/${IMAGE_BASENAME}-${MACHINE}.squashfs \
-            ${DEPLOY_DIR_IMAGE}/${IMAGE_BASENAME}-${MACHINE}.hash | \
+        root_hash=$(veritysetup format ${IMGDEPLOYDIR}/${IMAGE_BASENAME}-${MACHINE}.squashfs \
+            ${B}/${IMAGE_BASENAME}-${MACHINE}.hash | \
             tail -n 1 | \
             cut -d ":" -f2 | \
             tr -d '[:space:]')
 
-        cp ${DEPLOY_DIR_IMAGE}/${IMAGE_BASENAME}-${MACHINE}.squashfs ${GUESTS_OUT}/${OS_NAME}-${trustme_version}/root.img
-        cp ${DEPLOY_DIR_IMAGE}/${IMAGE_BASENAME}-${MACHINE}.hash ${GUESTS_OUT}/${OS_NAME}-${trustme_version}/root.hash.img
+        cp ${IMGDEPLOYDIR}/${IMAGE_BASENAME}-${MACHINE}.squashfs ${GUESTS_OUT}/${OS_NAME}-${trustme_version}/root.img
+        cp ${B}/${IMAGE_BASENAME}-${MACHINE}.hash ${GUESTS_OUT}/${OS_NAME}-${trustme_version}/root.hash.img
 
         python3 ${ENROLLMENT_DIR}/config_creator/guestos_config_creator.py \
             -b ${CFG_OVERLAY_DIR}/${TRUSTME_HARDWARE}/${OS_NAME}.conf -v ${trustme_version} \
@@ -61,4 +65,9 @@ do_sign_guestos () {
     rm ${ENROLLMENT_DIR}/config_creator/guestos_pb2.py*
 }
 
-addtask do_sign_guestos after do_image_complete before do_build
+do_deploy_guestos () {
+    cp -r "${GUESTS_OUT}" "${IMGDEPLOYDIR}"
+    if [ -n "${CONFIGS_OUT}" ]; then
+        cp -r "${CONFIGS_OUT}" "${IMGDEPLOYDIR}"
+    fi
+}

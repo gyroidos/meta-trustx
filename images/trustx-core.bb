@@ -25,7 +25,7 @@ IMAGE_INSTALL:append = " util-linux"
 IMAGE_INSTALL:append = " binutils"
 IMAGE_INSTALL:append = " shadow"
 
-CONFIGS_OUT = "${DEPLOY_DIR_IMAGE}/trustx-configs"
+CONFIGS_OUT = "${B}/trustx-configs"
 
 do_sign_guestos:append () {
     mkdir -p ${CONFIGS_OUT}
