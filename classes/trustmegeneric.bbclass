@@ -1,6 +1,5 @@
 inherit image_types
 inherit kernel-artifact-names
-inherit deploy
 
 #
 # Create an partitioned trustme image that can be dd'ed to the boot medium
@@ -402,8 +401,8 @@ do_build_trustmeimage () {
 	bbnote "Successfully created trustme image at ${TRUSTME_IMAGE}"
 }
 
-do_deploy () {
-	install -d "${DEPLOYDIR}"
-	cp -r "${TRUSTME_IMAGE_OUT}" "${DEPLOYDIR}"
+IMAGE_POSTPROCESS_COMMAND:append = " deploy_trustmeimage; "
+
+deploy_trustmeimage () {
+	cp -r "${TRUSTME_IMAGE_OUT}" "${IMGDEPLOYDIR}"
 }
-addtask do_deploy after do_image_complete
