@@ -24,8 +24,8 @@ cleanup_root() {
 	rm -rf ${IMAGE_ROOTFS}/etc
 	rm -rf ${IMAGE_ROOTFS}/run
 	rm -rf ${IMAGE_ROOTFS}/var
-	rmdir ${IMAGE_ROOTFS}/lib/firmware
-	rmdir ${IMAGE_ROOTFS}/lib
+	rm -rf ${IMAGE_ROOTFS}/lib/firmware
+	rm -rf ${IMAGE_ROOTFS}/lib
 }
 
 ROOTFS_POSTPROCESS_COMMAND:append = " move_firmware; "
