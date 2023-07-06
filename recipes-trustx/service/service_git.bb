@@ -1,5 +1,5 @@
 LICENSE = "GPLv2"
-LIC_FILES_CHKSUM = "file://${WORKDIR}/git/COPYING;md5=b234ee4d69f5fce4486a80fdaf4a4263"
+LIC_FILES_CHKSUM = "file://${S}/COPYING;md5=b234ee4d69f5fce4486a80fdaf4a4263"
 
 BRANCH = "dunfell"
 SRCREV = "${AUTOREV}"
@@ -24,7 +24,7 @@ PACKAGES =+ "converter"
 INSANE_SKIP_${PN} = "ldflags"
 INSANE_SKIP_converter = "ldflags"
 
-DEPENDS = "protobuf-c-native protobuf-c protobuf-c-text libtar zlib openssl"
+DEPENDS = "protobuf-c-native protobuf-c protobuf-c-text libtar zlib openssl rsync-native"
 
 FILES_${PN} += "${base_sbindir}"
 INHIBIT_PACKAGE_STRIP = "1"
@@ -33,22 +33,40 @@ SCRIPT_DIR = "${TOPDIR}/../trustme/build"
 PROVISIONING_DIR = "${SCRIPT_DIR}/device_provisioning"
 ENROLLMENT_DIR = "${PROVISIONING_DIR}/oss_enrollment"
 
+
+# Determine if a local checkout of the cml repo is available.
+# If so, build using externalsrc.
+# If not, build from git.
+python () {
+    cml_dir = d.getVar('TOPDIR', True) + "/../trustme/cml"
+    if os.path.isdir(cml_dir):
+        d.setVar('EXTERNALSRC', cml_dir)
+        d.setVar('EXTERNALSRC_BUILD', cml_dir)
+}
+inherit externalsrc
+
+
 do_configure () {
         :
 }
 
 
 do_compile () {
-        oe_runmake -C service all
-        oe_runmake -C converter all
+	if [ -n "${EXTERNALSRC}" ]; then
+		rsync -lr --exclude="oe-logs" --exclude="oe-workdir" "${S}/" "${B}"
+	fi
+
+
+	oe_runmake -C service all
+	oe_runmake -C converter all
 }
 
 do_install () {
         :
 	install -d ${D}${base_sbindir}/
-	install -m 0755 ${S}service/cml-service-container ${D}${base_sbindir}/
+	install -m 0755 ${B}/service/cml-service-container ${D}${base_sbindir}/
 	install -d ${D}${bindir}/
-	install -m 0755 ${S}converter/converter ${D}${bindir}/
+	install -m 0755 ${B}/converter/converter ${D}${bindir}/
 
 	install -d ${D}/pki_generator
 	install -d ${D}/pki_generator/config_creator
