@@ -1,0 +1,76 @@
+From 1060c0df7274e3dcdc67f73f03affb29239301bc Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Michael=20Wei=C3=9F?= <michael.weiss@aisec.fraunhofer.de>
+Date: Thu, 10 Aug 2023 11:21:43 +0200
+Subject: [PATCH] Makefile.am: Use src_topdir instead of relative include dir
+
+This allows to compile in seperate build directory. Otherwise
+headers in src/include dir would not be found. Since the src/include
+dir is not availabble in the build directory.
+---
+ src/engine/Makefile.am         | 2 +-
+ src/libcommon/Makefile.am      | 2 +-
+ src/opensslmissing/Makefile.am | 2 +-
+ src/provider/Makefile.am       | 2 +-
+ src/tools/Makefile.am          | 2 +-
+ 5 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/src/engine/Makefile.am b/src/engine/Makefile.am
+index a2a0cad..f9dc402 100644
+--- a/src/engine/Makefile.am
++++ b/src/engine/Makefile.am
+@@ -1,4 +1,4 @@
+-AM_CPPFLAGS = -I ../include ${DEPRECATION}
++AM_CPPFLAGS = -I $(top_srcdir)/src/include ${DEPRECATION}
+ 
+ openssl_engine_LTLIBRARIES=libtpm2.la
+ openssl_enginedir=$(ENGINESDIR)
+diff --git a/src/libcommon/Makefile.am b/src/libcommon/Makefile.am
+index ad566ff..00362ae 100644
+--- a/src/libcommon/Makefile.am
++++ b/src/libcommon/Makefile.am
+@@ -1,6 +1,6 @@
+ noinst_LIBRARIES = libcommon.a
+ 
+-AM_CPPFLAGS = -I ../include/ ${DEPRECATION}
++AM_CPPFLAGS = -I $(top_srcdir)/src/include/ ${DEPRECATION}
+ 
+ libcommon_a_SOURCES = tpm2-common.c
+ libcommon_a_CFLAGS = -fPIC
+diff --git a/src/opensslmissing/Makefile.am b/src/opensslmissing/Makefile.am
+index bc4243a..a829d4a 100644
+--- a/src/opensslmissing/Makefile.am
++++ b/src/opensslmissing/Makefile.am
+@@ -1,6 +1,6 @@
+ noinst_LIBRARIES = libosslm.a
+ 
+-AM_CPPFLAGS = -I ../include
++AM_CPPFLAGS = -I $(top_srcdir)/src/include
+ 
+ if HAVE_OPENSSL3
+ libosslm_a_SOURCES = rsa.c signature.c
+diff --git a/src/provider/Makefile.am b/src/provider/Makefile.am
+index 5ff91cf..ca6966c 100644
+--- a/src/provider/Makefile.am
++++ b/src/provider/Makefile.am
+@@ -1,4 +1,4 @@
+-AM_CPPFLAGS=-I../include
++AM_CPPFLAGS = -I $(top_srcdir)/src/include
+ COMMONLIB = ../libcommon/libcommon.a ../opensslmissing/libosslm.a
+ 
+ if HAVE_OPENSSL3
+diff --git a/src/tools/Makefile.am b/src/tools/Makefile.am
+index 62fb329..e42e0d2 100644
+--- a/src/tools/Makefile.am
++++ b/src/tools/Makefile.am
+@@ -7,7 +7,7 @@ man1_MANS = create_tpm2_key.1 load_tpm2_key.1 seal_tpm2_data.1 \
+ CLEANFILES = $(man1_MANS)
+ endif
+ 
+-AM_CPPFLAGS = -I ../include ${DEPRECATION}
++AM_CPPFLAGS = -I $(top_srcdir)/src/include ${DEPRECATION}
+ 
+ bin_PROGRAMS=create_tpm2_key load_tpm2_key seal_tpm2_data unseal_tpm2_data \
+ 	signed_tpm2_policy
+-- 
+2.30.2
+
