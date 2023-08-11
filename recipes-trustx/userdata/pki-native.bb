@@ -1,22 +1,24 @@
 LICENSE = "GPL-2.0-only"
 LIC_FILES_CHKSUM = "file://${TOPDIR}/../trustme/build/COPYING;md5=b234ee4d69f5fce4486a80fdaf4a4263"
 
-SRC = "${TOPDIR}/../trustme/build/"
+inherit externalsrc
 
-CFG_OVERLAY_DIR = "${SRC}/config_overlay"
-CONFIG_CREATOR_DIR = "${SRC}/config_creator"
-PROTO_FILE_DIR = "${WORKDIR}/cml/daemon"
-PROVISIONING_DIR = "${SRC}/device_provisioning"
+SRC = "${TOPDIR}/../trustme/build/"
+EXTERNALSRC = "${SRC}"
+
+CFG_OVERLAY_DIR = "${S}/config_overlay"
+CONFIG_CREATOR_DIR = "${S}/config_creator"
+PROVISIONING_DIR = "${S}/device_provisioning"
 ENROLLMENT_DIR = "${PROVISIONING_DIR}/oss_enrollment"
 TEST_CERT_DIR = "${TOPDIR}/test_certificates"
 
-DEPENDS = "openssl-native"
-
 inherit native
 
+DEPENDS = "openssl-native"
+
+SSTATE_SKIP_CREATION = "1"
+
 do_compile() {
-	#TODO Find cleaner way to do this
-	# random string to ignore SSTATE_MIRROR
     if [ ! -f ${TEST_CERT_DIR}.generating ]; then
         touch ${TEST_CERT_DIR}.generating
         export DO_PLATFORM_KEYS=${PKI_UEFI_KEYS}
@@ -31,5 +33,19 @@ do_compile() {
             openssl x509 -in ${TEST_CERT_DIR}/PK.crt -outform DER -out ${TEST_CERT_DIR}/PK.cer
         fi
         rm ${TEST_CERT_DIR}.generating
+    fi
+}
+
+do_clean() {
+    if [ -f ${TEST_CERT_DIR}.generating ]; then
+        rm ${TEST_CERT_DIR}.generating
+    fi
+    if [ -d ${TEST_CERT_DIR} ]; then
+        rm -r ${TEST_CERT_DIR}
+    fi
+    if [ -n "`ls ${ENROLLMENT_DIR}/certificates/ | egrep *.txt*`" ]; then
+        for txt in ${ENROLLMENT_DIR}/certificates/*.txt*; do
+            rm ${txt}
+        done
     fi
 }
