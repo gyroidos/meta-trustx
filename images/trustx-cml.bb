@@ -12,3 +12,8 @@ INITRAMFS_IMAGE_BUNDLE = "1"
 INITRAMFS_IMAGE = "trustx-cml-initramfs"
 
 PACKAGE_CLASSES = "package_ipk"
+
+prepare_device_conf () {
+    cp "${THISDIR}/${PN}/device.conf" "${WORKDIR}"
+}
+IMAGE_PREPROCESS_COMMAND:append = " prepare_device_conf;"

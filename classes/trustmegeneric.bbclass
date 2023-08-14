@@ -27,8 +27,6 @@ TRUSTME_BOOTPART_ALIGN="4096"
 TRUSTME_DATAPART_FS="ext4"
 TRUSTME_ROOTFS_ALIGN="4096"
 
-TRUSTME_DEFAULTCONFIG?="trustx-core.conf"
-
 TRUSTME_GENERIC_DEPENDS = " \
     parted-native:do_populate_sysroot \
     mtools-native:do_populate_sysroot \
@@ -159,6 +157,7 @@ do_build_trustmeimage () {
 	enrollment_dir="${provisioning_dir}/oss_enrollment"
 	test_cert_dir="${TOPDIR}/test_certificates"
 	cfg_overlay_dir="${src}/config_overlay"
+	device_cfg="${WORKDIR}/device.conf"
 
 	if ! [ -d "${test_cert_dir}" ];then
 		bbfatal_log "Test PKI not generated at ${test_cert_dir}\nIs trustx-cml-userdata built?"
@@ -181,7 +180,7 @@ do_build_trustmeimage () {
 		bbnote "Installing containers from default location ${deploy_dir_container}/trustx-guests"
 		cp -far "${deploy_dir_container}/trustx-configs/container/." "${rootfs_datadir}/cml/containers_templates/"
 		cp -afr "${deploy_dir_container}/trustx-guests/." "${rootfs_datadir}/cml/operatingsystems"
-		cp -f "${deploy_dir_container}/trustx-configs/device.conf" "${rootfs_datadir}/cml/"
+		cp -f "${device_cfg}" "${rootfs_datadir}/cml/"
 	else # no container provided
 		bbwarn "It seems that no containers were built in directory ${deploy_dir_container}. You will have to provide at least c0 manually!"
 		cp ${cfg_overlay_dir}/${TRUSTME_HARDWARE}/device.conf "${rootfs_datadir}/cml/"
