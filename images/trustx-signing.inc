@@ -17,10 +17,15 @@ TRUSTME_VERSION ?= "${@'${IMAGE_VERSION_SUFFIX}'.replace('-','')}"
 DEPENDS += " pki-native python3-native protobuf-native python3-protobuf-native protobuf-c-native cryptsetup-native cmld"
 
 OS_NAME ?= "${PN}os"
+OS_CONFIG ?= "undefined"
 
 IMAGE_POSTPROCESS_COMMAND:append = " do_sign_guestos; do_deploy_guestos; "
 
 do_sign_guestos () {
+    if [ "${OS_CONFIG}" = "undefined" ]; then
+        bbfatal "Variable \"OS_CONFIG\" for guestos ${PN} is not set. Please set \"OS_CONFIG\" in the image recipe."
+    fi
+
     trustme_version=${TRUSTME_VERSION}
     protoc --python_out=${ENROLLMENT_DIR}/config_creator -I${PROTO_FILE_DIR} ${PROTO_FILE_DIR}/guestos.proto
     mkdir -p ${GUESTS_OUT}
@@ -48,13 +53,13 @@ do_sign_guestos () {
         cp ${B}/${IMAGE_BASENAME}-${MACHINE}.hash ${GUESTS_OUT}/${OS_NAME}-${trustme_version}/root.hash.img
 
         python3 ${ENROLLMENT_DIR}/config_creator/guestos_config_creator.py \
-            -b ${CFG_OVERLAY_DIR}/${TRUSTME_HARDWARE}/${OS_NAME}.conf -v ${trustme_version} \
+            -b ${OS_CONFIG} -v ${trustme_version} \
             -c ${GUESTS_OUT}/${OS_NAME}-${trustme_version}.conf \
             -i ${GUESTS_OUT}/${OS_NAME}-${trustme_version}/ -n ${OS_NAME} \
             -d ${root_hash}
     else
         python3 ${ENROLLMENT_DIR}/config_creator/guestos_config_creator.py \
-            -b ${CFG_OVERLAY_DIR}/${TRUSTME_HARDWARE}/${OS_NAME}.conf -v ${trustme_version} \
+            -b ${OS_CONFIG} -v ${trustme_version} \
             -c ${GUESTS_OUT}/${OS_NAME}-${trustme_version}.conf \
             -i ${GUESTS_OUT}/${OS_NAME}-${trustme_version}/ -n ${OS_NAME}
     fi
