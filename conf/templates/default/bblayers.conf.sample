@@ -16,7 +16,6 @@ BBLAYERS ?= " \
   ${OEROOT}/meta-openembedded/meta-perl \
   ${OEROOT}/meta-openembedded/meta-filesystems \
   ${OEROOT}/meta-virtualization \
-  ${OEROOT}/meta-java \
   ${OEROOT}/meta-trustx \
   "
 
