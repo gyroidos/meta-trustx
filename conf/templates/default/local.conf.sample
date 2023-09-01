@@ -8,6 +8,7 @@ DISTRO = "gyroidos-cml"
 require conf/trustx/##MACHINE##.inc
 
 TRUSTME_SCHSM = "##TRUSTME_SCHSM##"
+TRUSTME_SANITIZERS = "##TRUSTME_SANITIZERS##"
 
 USER_CLASSES ?= "buildstats"
 
