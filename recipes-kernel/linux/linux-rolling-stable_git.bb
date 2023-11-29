@@ -10,6 +10,8 @@ LIC_FILES_CHKSUM = "file://COPYING;md5=6bc538ed5bd9a7fc9398086aedcd7e46"
 LINUX_VERSION ?= "1.0"
 LINUX_VERSION_EXTENSION = "-stable"
 
+KERNEL_VERSION_SANITY_SKIP="1"
+
 SRCREV_machine ?= "${AUTOREV}"
 
 FILESEXTRAPATHS:prepend := "${THISDIR}/linux-vanilla:"
