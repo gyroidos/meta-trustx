@@ -20,7 +20,8 @@ TRUSTME_IMAGE_TMP="${B}/tmp_trustmeimage"
 TRUSTME_IMAGE_OUT="${B}/trustme_image"
 TRUSTME_IMAGE="${TRUSTME_IMAGE_OUT}/trustmeimage.img"
 
-TRUSTME_DATAPART_EXTRA_SPACE?="1024"
+# extra space for CML data partition in MiB
+TRUSTME_DATAPART_EXTRA_SPACE="4196"
 TRUSTME_BOOTPART_EXTRA_FACTOR?="1.2"
 TRUSTME_BOOTPART_FS="fat16"
 TRUSTME_BOOTPART_ALIGN="4096"
@@ -231,7 +232,7 @@ do_build_trustmeimage () {
 	bootpart_size_1k="$(expr $bootpart_size_bytes '/' 1024)"
 
 	datapart_size_targetblocks="$(du --block-size=${TRUSTME_TARGET_ALIGN} -s ${tmp_datapart} | awk '{print $1}')"
-	datapart_size_targetblocks="$(echo ${datapart_size_targetblocks} '+' '(' ${TRUSTME_DATAPART_EXTRA_SPACE} '*' 1024 '/' 4 ')' '+' 1 | bc)"
+	datapart_size_targetblocks="$(echo ${datapart_size_targetblocks} '+' '(' ${TRUSTME_DATAPART_EXTRA_SPACE} '*' 1024 '*' 1024 '/' ${TRUSTME_TARGET_ALIGN} ')' '+' 1 | bc)"
 	datapart_size_bytes="$(expr $datapart_size_targetblocks '*' ${TRUSTME_TARGET_ALIGN})"
 	datafolder_size="$(expr $datapart_size_targetblocks '*' ${TRUSTME_TARGET_ALIGN})"
 	bbnote "Data files size: $datafolder_size bytes"
