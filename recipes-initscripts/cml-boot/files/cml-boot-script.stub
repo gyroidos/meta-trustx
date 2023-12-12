@@ -166,6 +166,8 @@ done
 
 export PATH="/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin"
 
+#DEV_START_SSHD#
+
 echo "Starting Compartment Manager Daemon (cmld)"
 cmld &
 echo "${CML_START_MSG}" > /dev/console

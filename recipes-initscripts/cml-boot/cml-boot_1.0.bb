@@ -40,6 +40,16 @@ do_install() {
 	mknod -m 622 ${D}/dev/tty11 c 4 11
 }
 
+# Development builds include a ssh server in the cml layer.
+# Add the starting command to the init script.
+do_install:append () {
+	if [ "y" = "${DEVELOPMENT_BUILD}" ];then
+		bbwarn "Patching /init script to start SSH server in cml layer"
+		sed -i '\|#DEV_START_SSHD#|e cat ${THISDIR}/files/start_sshd' ${D}/init
+	fi
+	sed -i '/#DEV_START_SSHD#/d' ${D}/init
+}
+
 FILES:${PN} += " /init /dev ${sysconfdir}/init_ascii"
 
 # Due to kernel dependency
