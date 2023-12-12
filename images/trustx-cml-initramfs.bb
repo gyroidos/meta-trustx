@@ -36,6 +36,8 @@ DEBUG_PACKAGES = "\
 	parted \
 	util-linux-sfdisk \
 	util-linux \
+	openssh-sshd \
+	ssh-keys \
 "
 
 PACKAGE_INSTALL:append = '${@bb.utils.contains_any("EXTRA_IMAGE_FEATURES", [ 'debug-tweaks' ], "${DEBUG_PACKAGES}", "",d)}'
