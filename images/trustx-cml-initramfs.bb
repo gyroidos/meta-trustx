@@ -62,6 +62,7 @@ IMAGE_FEATURES:remove = "package-management"
 
 IMAGE_ROOTFS_SIZE = "4096"
 
+do_rootfs[depends] += "virtual/kernel:do_shared_workdir"
 KERNELVERSION="$(cat "${STAGING_KERNEL_BUILDDIR}/kernel-abiversion")"
 
 update_tabs () {
