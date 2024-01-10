@@ -2,8 +2,6 @@ inherit image
 
 LICENSE = "GPL-2.0-only"
 
-KERNELVERSION="$(cat "${STAGING_KERNEL_BUILDDIR}/kernel-abiversion")"
-
 DEPENDS += "coreutils-native"
 
 IMAGE_FSTYPES="${TRUSTME_FSTYPES}"
