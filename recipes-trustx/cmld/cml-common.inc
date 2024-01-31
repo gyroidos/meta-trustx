@@ -11,6 +11,10 @@ SRC_URI = "git://github.com/gyroidos/cml.git;branch=${BRANCH};protocol=https"
 
 S = "${WORKDIR}/git"
 
+# enable buildhistory for this recipe to allow SRCREV extraction
+inherit buildhistory
+BUILDHISTORY_COMMIT = "0"
+
 DEPENDS:append = " rsync-native"
 
 # Determine if a local checkout of the cml repo is available.
