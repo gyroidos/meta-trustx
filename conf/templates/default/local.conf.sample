@@ -5,6 +5,8 @@ DISTRO_FEATURES:append = " virtualization"
 
 DISTRO = "gyroidos-cml"
 
+TRUSTME_BOOTPART_SIZE = "512"
+
 require conf/trustx/##MACHINE##.inc
 
 TRUSTME_SCHSM = "##TRUSTME_SCHSM##"

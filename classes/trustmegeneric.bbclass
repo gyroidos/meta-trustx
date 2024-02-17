@@ -22,7 +22,8 @@ TRUSTME_IMAGE="${TRUSTME_IMAGE_OUT}/trustmeimage.img"
 
 # extra space for CML data partition in MiB
 TRUSTME_DATAPART_EXTRA_SPACE="4196"
-TRUSTME_BOOTPART_EXTRA_FACTOR?="1.2"
+# size of the boot partition in MiB
+TRUSTME_BOOTPART_SIZE?="100"
 TRUSTME_BOOTPART_FS="fat16"
 TRUSTME_BOOTPART_ALIGN="4096"
 TRUSTME_DATAPART_FS="ext4"
@@ -217,19 +218,18 @@ do_build_trustmeimage () {
 	cp -afr "${tmp_datapart}/." "${TRUSTME_IMAGE_OUT}/trustme_datapartition"
 
 	# Create boot partition and mark it as bootable
-	bootpart_size_targetblocks="$(du --block-size=${TRUSTME_TARGET_ALIGN} -s ${TRUSTME_BOOTPART_DIR} | awk '{print $1}')"
-	bootpart_size_targetblocks="$(echo ${bootpart_size_targetblocks} '*' ${TRUSTME_BOOTPART_EXTRA_FACTOR} '/' 1 | bc)"
-	bootpart_size_bytes="$(expr $bootpart_size_targetblocks '*' ${TRUSTME_TARGET_ALIGN})"
-	# append space to bootpart if TRUSTME_TARGET_ALIGN < 1024 (mkdisfs block size)
-	if ! [ "$(expr $bootpart_size_bytes '%' 1024)"="0" ]; then
-		echo "Appending boot partition size to match mkdosfs blocksize of 1024"
-		bootpart_size_bytes="$(expr $bootpart_size_bytes + '(' $bootpart_size_bytes '%' 1024 ')')"
-		bootpart_size_targetblocks="$(${bootpart_size_bytes} '/' ${TRUSTME_TARGET_ALIGN})"
+	bootpart_files_size_bytes="$(du --block-size=1 -s ${TRUSTME_BOOTPART_DIR} | awk '{print $1}')"
+
+	bootpart_size_bytes="$(expr "${TRUSTME_BOOTPART_SIZE}" '*' 1024 '*' 1024)"
+
+	if [ "${bootpart_files_size_bytes}" -ge "${bootpart_size_bytes}" ];then
+		bberror "Specified boot partition size of ${TRUSTME_BOOTPART_SIZE} MiB is too small for size of boot files of ${bootpart_files_size_bytes} bytes"
 	fi
-	bbnote "Boot files size $bootpart_size_bytes) bytes"
+
+	bbwarn "Boot partition size in bytes; $bootpart_size_bytes)"
 
 
-	bootpart_size_1k="$(expr $bootpart_size_bytes '/' 1024)"
+	bootpart_size_1k="$(expr "$bootpart_size_bytes" '/' 1024)"
 
 	datapart_size_targetblocks="$(du --block-size=${TRUSTME_TARGET_ALIGN} -s ${tmp_datapart} | awk '{print $1}')"
 	datapart_size_targetblocks="$(echo ${datapart_size_targetblocks} '+' '(' ${TRUSTME_DATAPART_EXTRA_SPACE} '*' 1024 '*' 1024 '/' ${TRUSTME_TARGET_ALIGN} ')' '+' 1 | bc)"
