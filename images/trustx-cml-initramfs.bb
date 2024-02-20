@@ -20,7 +20,6 @@ PACKAGE_INSTALL = "\
 	iproute2 \
 	lxcfs \
 	pv \
-	uid-wrapper \
 "
 
 # For debug purpose image install additional packages if debug-tweaks is set in local.conf
