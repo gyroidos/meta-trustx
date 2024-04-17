@@ -121,4 +121,4 @@ ROOTFS_POSTPROCESS_COMMAND:append = '${@oe.utils.vartrue('DEVELOPMENT_BUILD', " 
 
 inherit extrausers
 # password for root is 'root'
-EXTRA_USERS_PARAMS = '${@oe.utils.vartrue('DEVELOPMENT_BUILD', "usermod -p '\$1\$1234\$XJI6P4bccABjEC1v6k64V1' root; ", "",d)}'
+EXTRA_USERS_PARAMS = '${@oe.utils.vartrue('DEVELOPMENT_BUILD', "usermod -p '\\$1\\$1234\\$XJI6P4bccABjEC1v6k64V1' root; ", "",d)}'
