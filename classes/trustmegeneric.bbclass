@@ -129,5 +129,9 @@ IMAGE_POSTPROCESS_COMMAND:append = " deploy_trustmeimage; "
 deploy_trustmeimage () {
 	ln -sf "../${IMAGE_NAME}${IMAGE_NAME_SUFFIX}.wic" "${TRUSTME_IMAGE_OUT}/trustmeimage.img"
 	ln -sf "../${IMAGE_NAME}${IMAGE_NAME_SUFFIX}.wic.bmap" "${TRUSTME_IMAGE_OUT}/trustmeimage.img.bmap"
+
+	# deploy rootfs contents for installer build
+	cp -r "${IMAGE_ROOTFS}" "${TRUSTME_IMAGE_OUT}/trustme_datapartition"
+
 	cp -r "${TRUSTME_IMAGE_OUT}" "${IMGDEPLOYDIR}"
 }
