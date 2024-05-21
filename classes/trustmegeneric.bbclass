@@ -10,19 +10,8 @@ TEST_CERT_DIR = "${TOPDIR}/test_certificates"
 SECURE_BOOT_SIGNING_KEY = "${TEST_CERT_DIR}/ssig_subca.key"
 SECURE_BOOT_SIGNING_CERT = "${TEST_CERT_DIR}/ssig_subca.cert"
 
-# alignment in KiB
-TRUSTME_TARGET_ALIGN="4"
-TRUSTME_PARTTABLE_TYPE?="gpt"
-
 TRUSTME_IMAGE_OUT="${B}/trustme_image"
 TRUSTME_IMAGE="${TRUSTME_IMAGE_OUT}/trustmeimage.img"
-
-# extra space for CML data partition in MiB
-TRUSTME_DATAPART_EXTRA_SPACE?="4196"
-# size of the boot partition in MiB
-TRUSTME_BOOTPART_SIZE ?= "512"
-TRUSTME_BOOTPART_FS = "vfat"
-TRUSTME_DATAPART_FS = "ext4"
 
 TRUSTME_GENERIC_DEPENDS = " \
     trustx-cml-initramfs:do_image_complete \
