@@ -8,6 +8,7 @@ LIC_FILES_CHKSUM = "file://${COREBASE}/meta/COPYING.MIT;md5=3da9cfbcb788c80a0384
 SRC_URI = "\
 	file://init_ascii \
 	file://start_sshd \
+	file://enable_extdata \
 	file://cml-boot-script.stub \
 "
 
@@ -27,7 +28,6 @@ do_install() {
 	cat ${WORKDIR}/cml-boot-script.stub >> ${D}/init
 
 	if [ "y" != "${DEVELOPMENT_BUILD}" ];then
-		sed -i '/^mkdir -p \/mnt\/extdata/,/^fi/d' ${D}/init
 		sed -i 's|mkdir -p /data/logs|mount -o bind,nosuid,nodev,noexec \/mnt\/userdata \/data\n\nmkdir -p /data/logs|' ${D}/init
 	fi
 
@@ -41,14 +41,19 @@ do_install() {
 	mknod -m 622 ${D}/dev/tty11 c 4 11
 }
 
-# Development builds include a ssh server in the cml layer.
-# Add the starting command to the init script.
+# For debugging purposes, development builds include a ssh server
+# in the cml layer, an option to mount an external file system on /data
+# and we enable core dumps.
 do_install:append () {
 	if [ "y" = "${DEVELOPMENT_BUILD}" ];then
 		bbwarn "Patching /init script to start SSH server in cml layer"
 		sed -i '\|#DEV_START_SSHD#|e cat ${WORKDIR}/start_sshd' ${D}/init
+
+		bbwarn "Patching /init script to mount external data fs for debugging purposes"
+		sed -i '\|#DEV_ENABLE_EXTDATA#|e cat ${WORKDIR}/enable_extdata' ${D}/init
 	fi
 	sed -i '/#DEV_START_SSHD#/d' ${D}/init
+	sed -i '/#DEV_ENABLE_EXTDATA#/d' ${D}/init
 }
 
 FILES:${PN} += " /init /dev ${sysconfdir}/init_ascii"
