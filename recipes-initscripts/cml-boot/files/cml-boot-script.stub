@@ -125,6 +125,9 @@ mount -a
 
 #DEV_ENABLE_EXTDATA#
 
+echo "/data/core/%t_core.%s.%p.%P_%u_%g_%E" >> /proc/sys/kernel/core_pattern
+ulimit -c 0
+
 mkdir -p /data/logs
 
 #now modules partition is mounted

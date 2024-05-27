@@ -37,6 +37,7 @@ DEBUG_PACKAGES = "\
 	util-linux \
 	openssh-sshd \
 	ssh-keys \
+	gdb \
 "
 
 PACKAGE_INSTALL:append = '${@oe.utils.vartrue('DEVELOPMENT_BUILD', "${DEBUG_PACKAGES}", "",d)}'

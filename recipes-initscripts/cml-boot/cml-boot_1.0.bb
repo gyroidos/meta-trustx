@@ -51,6 +51,10 @@ do_install:append () {
 
 		bbwarn "Patching /init script to mount external data fs for debugging purposes"
 		sed -i '\|#DEV_ENABLE_EXTDATA#|e cat ${WORKDIR}/enable_extdata' ${D}/init
+
+		bbwarn "Enabling core dumps for debugging purposes"
+		sed -i 's|ulimit -c 0|ulimit -c 102400|' ${D}/init
+		sed -i 's|.*/proc/sys/kernel/core_pattern|mkdir -p /data/core\n&|' ${D}/init
 	fi
 	sed -i '/#DEV_START_SSHD#/d' ${D}/init
 	sed -i '/#DEV_ENABLE_EXTDATA#/d' ${D}/init
