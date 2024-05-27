@@ -14,5 +14,3 @@ LABEL=trustme        /mnt                 ext4       nosuid,nodev,noexec   0  0
 
 /mnt/modules.img     /lib/modules         squashfs   loop,nosuid,nodev,noexec 0  0
 /mnt/firmware.img    /lib/firmware        squashfs   loop,nosuid,nodev,noexec 0  0
-
-LABEL=containers     /data/cml/containers ext4       nosuid,nodev,noexec,nofail 0  0

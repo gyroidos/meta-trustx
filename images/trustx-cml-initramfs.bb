@@ -64,18 +64,22 @@ IMAGE_ROOTFS_SIZE = "4096"
 do_rootfs[depends] += "virtual/kernel:do_shared_workdir"
 KERNELVERSION="$(cat "${STAGING_KERNEL_BUILDDIR}/kernel-abiversion")"
 
+# In development builds, a debugging shell is available on tty12
+# and an external file system can be mounted on /data&cml/containers
+# for debugging purposes
 update_tabs () {
-    echo "tty12::respawn:${base_sbindir}/mingetty --autologin root tty12" >> ${IMAGE_ROOTFS}/etc/inittab
+	echo "tty12::respawn:${base_sbindir}/mingetty --autologin root tty12" >> ${IMAGE_ROOTFS}/etc/inittab
 
-    mkdir -p ${IMAGE_ROOTFS}/dev
-    mknod -m 622 ${IMAGE_ROOTFS}/dev/tty12 c 4 12
+	mkdir -p ${IMAGE_ROOTFS}/dev
+	mknod -m 622 ${IMAGE_ROOTFS}/dev/tty12 c 4 12
+
+	bbwarn "Enabling external partition for /data/cml/containers for debugging purposes"
+	echo 'LABEL=containers     /data/cml/containers ext4       nosuid,nodev,noexec,nofail 0  0' >> ${IMAGE_ROOTFS}/etc/fstab
 }
 
 update_tabs_release () {
-    # clean out any serial consoles
-    sed -i "/ttyS[[:digit:]]\+/d" ${IMAGE_ROOTFS}/etc/inittab
-
-    sed -i '/LABEL=containers/d' ${IMAGE_ROOTFS}/etc/fstab
+	# clean out any serial consoles
+	sed -i "/ttyS[[:digit:]]\+/d" ${IMAGE_ROOTFS}/etc/inittab
 }
 
 #TODO modsigning option in image fstype?
