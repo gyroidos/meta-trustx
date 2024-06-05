@@ -22,7 +22,7 @@ PACKAGE_INSTALL = "\
 	pv \
 "
 
-# For debug purpose image install additional packages if debug-tweaks is set in local.conf
+# Install additional packages for debugging purposes if DEVELOPMENT_BUILD is set
 DEBUG_PACKAGES = "\
 	base-passwd \
 	shadow \
@@ -37,11 +37,15 @@ DEBUG_PACKAGES = "\
 	util-linux \
 	openssh-sshd \
 	ssh-keys \
+	tcpdump \
+	binutils \
 	gdb \
+	gdbserver \
+	strace \
+	cmld-dbg \
 "
 
 PACKAGE_INSTALL:append = '${@oe.utils.vartrue('DEVELOPMENT_BUILD', "${DEBUG_PACKAGES}", "",d)}'
-
 
 #PACKAGE_INSTALL += "\
 #	strace \
