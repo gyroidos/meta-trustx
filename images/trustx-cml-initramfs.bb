@@ -39,7 +39,7 @@ DEBUG_PACKAGES = "\
 	ssh-keys \
 "
 
-PACKAGE_INSTALL:append = '${@bb.utils.contains_any("EXTRA_IMAGE_FEATURES", [ 'debug-tweaks' ], "${DEBUG_PACKAGES}", "",d)}'
+PACKAGE_INSTALL:append = '${@oe.utils.vartrue('DEVELOPMENT_BUILD', "${DEBUG_PACKAGES}", "",d)}'
 
 
 #PACKAGE_INSTALL += "\
@@ -112,8 +112,8 @@ ROOTFS_POSTPROCESS_COMMAND:append = " cleanup_boot; "
 ROOTFS_POSTPROCESS_COMMAND:append = " install_ima_cert; "
 
 # For debug purpose allow login if debug-tweaks is set in local.conf
-ROOTFS_POSTPROCESS_COMMAND:append = '${@bb.utils.contains_any("EXTRA_IMAGE_FEATURES", [ 'debug-tweaks' ], " update_tabs ; ", " update_tabs_release ; ",d)}'
+ROOTFS_POSTPROCESS_COMMAND:append = '${@oe.utils.vartrue('DEVELOPMENT_BUILD', " update_tabs ; ", " update_tabs_release ; ",d)}'
 
 inherit extrausers
 # password for root is 'root'
-EXTRA_USERS_PARAMS = '${@bb.utils.contains_any("EXTRA_IMAGE_FEATURES", [ 'debug-tweaks' ], "usermod -p '\$1\$1234\$XJI6P4bccABjEC1v6k64V1' root; ", "",d)}'
+EXTRA_USERS_PARAMS = '${@oe.utils.vartrue('DEVELOPMENT_BUILD', "usermod -p '\$1\$1234\$XJI6P4bccABjEC1v6k64V1' root; ", "",d)}'

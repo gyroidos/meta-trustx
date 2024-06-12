@@ -16,7 +16,7 @@ PR = "r2"
 
 S = "${WORKDIR}"
 
-CML_START_MSG = '${@bb.utils.contains_any("EXTRA_IMAGE_FEATURES", [ 'debug-tweaks' ], "-- cml debug console on tty12 [ready]", "-- cml in release mode [ready]",d)}'
+CML_START_MSG = '${@oe.utils.vartrue('DEVELOPMENT_BUILD', "-- cml debug console on tty12 [ready]", "-- cml in release mode [ready]",d)}'
 
 do_install() {
 	echo "#!/bin/sh" >> ${D}/init
