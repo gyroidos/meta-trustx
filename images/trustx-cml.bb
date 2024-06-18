@@ -12,6 +12,8 @@ INITRAMFS_IMAGE = "trustx-cml-initramfs"
 
 PACKAGE_CLASSES = "package_ipk"
 
+TRUSTME_DATAPART_LABEL = "trustme"
+
 prepare_device_conf () {
     cp "${THISDIR}/${PN}/device.conf" "${WORKDIR}"
 
