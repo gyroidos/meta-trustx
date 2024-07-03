@@ -21,7 +21,7 @@ TRUSTME_IMAGE_OUT="${B}/trustme_image"
 TRUSTME_IMAGE="${TRUSTME_IMAGE_OUT}/trustmeimage.img"
 
 # extra space for CML data partition in MiB
-TRUSTME_DATAPART_EXTRA_SPACE="4196"
+TRUSTME_DATAPART_EXTRA_SPACE?="4196"
 # size of the boot partition in MiB
 TRUSTME_BOOTPART_SIZE?="100"
 TRUSTME_BOOTPART_FS="fat16"
