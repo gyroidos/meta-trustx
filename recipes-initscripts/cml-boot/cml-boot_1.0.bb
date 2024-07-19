@@ -55,6 +55,7 @@ do_install:append () {
 		bbwarn "Enabling core dumps for debugging purposes"
 		sed -i 's|ulimit -c 0|ulimit -c 102400|' ${D}/init
 		sed -i 's|.*/proc/sys/kernel/core_pattern|mkdir -p /data/core\n&|' ${D}/init
+		sed -i 's|/data/core/%t_core|/data/core/%t_core.%s.%p.%P_%u_%g_%E|' ${D}/init
 	fi
 	sed -i '/#DEV_START_SSHD#/d' ${D}/init
 	sed -i '/#DEV_ENABLE_EXTDATA#/d' ${D}/init
