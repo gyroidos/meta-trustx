@@ -28,8 +28,10 @@ do_compile() {
             mkdir -p ${TEST_CERT_DIR}/certs
         fi
         openssl x509 -in ${TEST_CERT_DIR}/ssig_subca.cert -outform DER -out ${TEST_CERT_DIR}/certs/signing_key.x509
-        cp ${TEST_CERT_DIR}/ssig_subca.key ${TEST_CERT_DIR}/certs/signing_key.pem
-        openssl x509 -in ${TEST_CERT_DIR}/ssig_subca.cert -outform PEM >> ${TEST_CERT_DIR}/certs/signing_key.pem
+        if [ -f ${TEST_CERT_DIR}/ssig_subca.key ]; then
+                cp ${TEST_CERT_DIR}/ssig_subca.key ${TEST_CERT_DIR}/certs/signing_key.pem
+                openssl x509 -in ${TEST_CERT_DIR}/ssig_subca.cert -outform PEM >> ${TEST_CERT_DIR}/certs/signing_key.pem
+        fi
         if [ -f ${TEST_CERT_DIR}/PK.crt ]; then 
             openssl x509 -in ${TEST_CERT_DIR}/PK.crt -outform DER -out ${TEST_CERT_DIR}/PK.cer
         fi
