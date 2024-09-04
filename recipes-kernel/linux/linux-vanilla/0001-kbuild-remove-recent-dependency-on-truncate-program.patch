@@ -1,0 +1,34 @@
+From 14cca8fcbafcb9922d32b4dd62cbe2b82a462e5a Mon Sep 17 00:00:00 2001
+From: Tony Battersby <tonyb@cybernetics.com>
+Date: Thu, 29 Aug 2024 09:51:25 -0400
+Subject: [PATCH] kbuild: remove recent dependency on "truncate" program
+
+Remove the recently-added dependency on the truncate program for
+building the kernel. truncate is not available when building the kernel
+under Yocto. It could be added, but it would be better just to avoid
+the unnecessary dependency.
+
+Fixes: 1472464c6248 ("kbuild: avoid scripts/kallsyms parsing /dev/null")
+Signed-off-by: Tony Battersby <tonyb@cybernetics.com>
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
+ scripts/link-vmlinux.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
+index 070a319140e8..c27b4e969f20 100755
+--- a/scripts/link-vmlinux.sh
++++ b/scripts/link-vmlinux.sh
+@@ -215,7 +215,7 @@ kallsymso=
+ strip_debug=
+ 
+ if is_enabled CONFIG_KALLSYMS; then
+-	truncate -s0 .tmp_vmlinux.kallsyms0.syms
++	true > .tmp_vmlinux.kallsyms0.syms
+ 	kallsyms .tmp_vmlinux.kallsyms0.syms .tmp_vmlinux0.kallsyms
+ fi
+ 
+-- 
+2.39.2
+
