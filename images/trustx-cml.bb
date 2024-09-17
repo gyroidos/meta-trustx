@@ -17,7 +17,7 @@ TRUSTME_DATAPART_LABEL = "trustme"
 prepare_device_conf () {
     cp "${THISDIR}/${PN}/device.conf" "${WORKDIR}"
 
-    if [ "y" = "${DEVELOPMENT_BUILD}" ];then
+    if [ "y" = "${DEVELOPMENT_BUILD}" ] &&  [ "n" = "${CC_MODE}" ];then
         if [ -z "$(grep 'signed_configs' ${WORKDIR}/device.conf)" ];then
             bbwarn "Disabling signature enforcement for container configuration in dev build"
             echo "signed_configs: false" >> ${WORKDIR}/device.conf
