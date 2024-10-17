@@ -6,8 +6,8 @@ LICENSE = "BSD-3-Clause"
 
 LIC_FILES_CHKSUM = "file://LICENSE;md5=1e023f61454ac828b4aa1bc4293f7d5f"
 
-SRC_URI[md5sum] = "43a3cca7d3909432f7887c981cbadd5c"
-SRC_URI[sha256sum] = "83bebb0d36ef9ced6cf3be2be9f0b4463a692d67254df31216271a916aaba851"
+SRC_URI[md5sum] = "50bbb2b901bacf0aff66f369198d5dee"
+SRC_URI[sha256sum] = "0dbd861b5b8ffca72f67fa240adcecaa92b0383250b95fbe5fefe06642482980"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/project/ibmtpm20tss/ibmtss${PV}.tar.gz;downloadfilename=ibmtss-${PV}.tar.gz;subdir=${PN}"
 
