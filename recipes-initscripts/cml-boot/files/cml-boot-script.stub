@@ -131,7 +131,12 @@ mount -a
 echo "/data/core/%t_core" >> /proc/sys/kernel/core_pattern
 ulimit -c 0
 
-mount -o bind,nosuid,nodev,noexec /mnt/userdata /data
+# check if data is already mounted by debugging feature or fstab
+mountpoint /data
+if [ $? -ne 0 ]; then
+	mount -o bind,nosuid,nodev,noexec /mnt/userdata /data
+fi
+
 mkdir -p /data/logs
 
 #now modules partition is mounted
