@@ -92,8 +92,7 @@ install_ima_cert () {
 
 	mkdir -p ${IMAGE_ROOTFS}/etc/keys
 
-	if [[ "${FIRMWARE_SIG_CERT}" == pkcs11:* ]] # BASH-if on purpose
-	then
+	if is_pkcs11_uri ${FIRMWARE_SIG_CERT}; then
 		extract_cert "${FIRMWARE_SIG_CERT}" "${WORKDIR}/FIRMWARE_SIG_CERT.pem"
 		openssl x509 -in "${WORKDIR}/FIRMWARE_SIG_CERT.pem" -outform DER -out "${IMAGE_ROOTFS}/etc/keys/x509_ima.der"
 	else

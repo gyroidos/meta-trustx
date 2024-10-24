@@ -28,8 +28,7 @@ install_ssig_rootca () {
 		bbfatal "GUESTOS_SIG_ROOT_CERT is not set. Set GUESTOS_SIG_ROOT_CERT in local.conf."
 	fi
 
-	if [[ "${GUESTOS_SIG_ROOT_CERT}" == pkcs11:* ]] # BASH-if on purpose
-	then
+	if is_pkcs11_uri ${GUESTOS_SIG_ROOT_CERT}; then
 		extract_cert "${GUESTOS_SIG_ROOT_CERT}" "${rootfs_datadir}/cml/tokens/ssig_rootca.cert"
 	else
 		if ! [ -f "${GUESTOS_SIG_ROOT_CERT}" ];then

@@ -20,6 +20,14 @@ extract_cert () {
         p11tool --provider ${PKCS11_MODULE_PATH} --export-chain $1 > $2
 }
 
+is_pkcs11_uri () {
+	if [ "${1#pkcs11:}" != "${1}" ]; then
+	    return 0 # this is TRUE in shell script. trust|me i know
+	else
+	    return 1
+	fi
+}
+
 # variables passed to OpenSSL
 export OPENSSL_ENGINES = "${RECIPE_SYSROOT_NATIVE}/usr/lib/engines-3"
 export PKCS11_MODULE_PATH

@@ -28,8 +28,7 @@ kernel_do_configure:prepend() {
 
 	# if KERNEL_SYSTEM_TRUSTED_KEYS is a pkcs#11 URI, extract the certificate
 	if [ "" != "${KERNEL_SYSTEM_TRUSTED_KEYS}" ]; then
-		if [[ "${KERNEL_SYSTEM_TRUSTED_KEYS}" == pkcs11:* ]] # BASH-if on purpose
-		then
+		if is_pkcs11_uri ${KERNEL_SYSTEM_TRUSTED_KEYS}; then
 			extract_cert "${KERNEL_SYSTEM_TRUSTED_KEYS}" "${WORKDIR}/KERNEL_SYSTEM_TRUSTED_KEYS.pem"
 			sed -i '/^CONFIG_SYSTEM_TRUSTED_KEYS=/{h;s|=.*|="${WORKDIR}/KERNEL_SYSTEM_TRUSTED_KEYS.pem"|};${x;/^$/{s||CONFIG_SYSTEM_TRUSTED_KEYS="${WORKDIR}/KERNEL_SYSTEM_TRUSTED_KEYS.pem"|;H};x}' ${B}/.config
 		else
