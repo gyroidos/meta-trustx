@@ -1,0 +1,32 @@
+From 508060a88b6e928b534a53bc0363d1017babc94e Mon Sep 17 00:00:00 2001
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+Date: Fri, 1 Nov 2024 17:49:22 -0500
+Subject: [PATCH] Fix 32 bit errors
+
+One formatting problem with UINT64 and a must check annotation on
+read that only seems to exist in the 32 bit builds.
+
+Signed-off-by: James Bottomley <James.Bottomley@HansenPartnership.com>
+---
+ src/tools/attest_tpm2_primary.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/src/tools/attest_tpm2_primary.c b/src/tools/attest_tpm2_primary.c
+index 3acd511..8b14f6b 100644
+--- a/src/tools/attest_tpm2_primary.c
++++ b/src/tools/attest_tpm2_primary.c
+@@ -416,8 +416,9 @@ void do_certify(const char *auth, TPM_HANDLE handle, const char *namefile,
+ 		tpm2_get_hexname(hexname, &pubh);
+ 		printf("%s\n", hexname);
+ 	} else {
+-		printf("Good certification from TPM at %lu.%04d reset count %u\n",
+-		       a.clockInfo.clock/1000, (int)(a.clockInfo.clock%1000),
++		printf("Good certification from TPM at %llu.%04d reset count %u\n",
++		       (unsigned long long)a.clockInfo.clock/1000,
++		       (int)(a.clockInfo.clock%1000),
+ 		       a.clockInfo.resetCount);
+ 	}
+ 	rc = 0;
+-- 
+2.39.5
+

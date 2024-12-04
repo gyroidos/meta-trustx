@@ -22,6 +22,7 @@ SRC_URI = "https://git.kernel.org/pub/scm/linux/kernel/git/jejb/${TAR_N}.git/sna
 	file://src-provider-keymgmt-initialize-order-in-tpm2_keymgm_${PV}.patch \
 	file://0001-fix-uninitialized-variables-reported-by-gcc_${PV}.patch \
 	file://Do-not-use-deprecated-ibmtss-functions_${PV}.patch \
+	file://Fix-32-bit-errors_${PV}.patch \
 "
 
 S = "${WORKDIR}/${TAR_N}-${PV}"
